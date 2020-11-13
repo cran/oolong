@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Chung-hong Chan" />
+
+
+<title>BTM</title>
+
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">BTM</h1>
+<h4 class="author">Chung-hong Chan <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></h4>
+
+
+
+<p>The package BTM by Jan Wijffels et al. finds “topics in collections of short text”. Compared to other topic model packages, BTM requires a special data format for training. Oolong has no problem generating word intrusion tests with BTM. However, that special data format can make creation of topic intrusion tests very tricky.</p>
+<p>This guide provides our recommendations on how to use BTM, so that the model can be used for generating topic intrusion tests.</p>
+<div id="requirement-1-keep-your-quanteda-corpus" class="section level1">
+<h1>Requirement #1: Keep your quanteda corpus</h1>
+<p>It is because every document has a unique document id.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">require</span>(BTM)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Loading required package: BTM</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">require</span>(quanteda)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; Loading required package: quanteda</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Package version: 2.1.2</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; Parallel computing: 2 of 8 threads used.</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; Attaching package: &#39;quanteda&#39;</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt; The following object is masked from &#39;package:utils&#39;:</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co">#&gt;     View</span></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="kw">require</span>(oolong)</a>
+<a class="sourceLine" id="cb1-14" title="14"><span class="co">#&gt; Loading required package: oolong</span></a>
+<a class="sourceLine" id="cb1-15" title="15">trump_corpus &lt;-<span class="st"> </span><span class="kw">corpus</span>(trump2k)</a></code></pre></div>
+<p>And then you can do regular text cleaning, stemming procedure with <code>quanteda</code>. Instead of making the product a <code>DFM</code> object, make it a <code>token</code> object. You may read <a href="https://github.com/quanteda/quanteda/issues/1404">this issue</a> by Benoit et al.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">tokens</span>(trump_corpus, <span class="dt">remove_punct =</span> <span class="ot">TRUE</span>, <span class="dt">remove_numbers =</span> <span class="ot">TRUE</span>, <span class="dt">remove_symbols =</span> <span class="ot">TRUE</span>, <span class="dt">split_hyphens =</span> <span class="ot">TRUE</span>, <span class="dt">remove_url =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_tolower</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="kw">stopwords</span>(<span class="st">&quot;en&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="st">&quot;@*&quot;</span>)  -&gt;<span class="st"> </span>trump_toks</a></code></pre></div>
+</div>
+<div id="requirement-2-keep-your-data-frame" class="section level1">
+<h1>Requirement #2: Keep your data frame</h1>
+<p>Use this function to convert the <code>token</code> object to a data frame.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">as.data.frame.tokens &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb3-2" title="2">  <span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="kw">names</span>(x), <span class="kw">lengths</span>(x)),</a>
+<a class="sourceLine" id="cb3-4" title="4">    <span class="dt">tokens =</span> <span class="kw">unlist</span>(x, <span class="dt">use.names =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-5" title="5">  )</a>
+<a class="sourceLine" id="cb3-6" title="6">}</a>
+<a class="sourceLine" id="cb3-7" title="7"></a>
+<a class="sourceLine" id="cb3-8" title="8">trump_dat &lt;-<span class="st"> </span><span class="kw">as.data.frame.tokens</span>(trump_toks)</a></code></pre></div>
+<p>Train a BTM model</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">trump_btm &lt;-<span class="st"> </span><span class="kw">BTM</span>(trump_dat, <span class="dt">k =</span> <span class="dv">8</span>, <span class="dt">iter =</span> <span class="dv">500</span>, <span class="dt">trace =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; 2020-11-13 14:46:14 Start Gibbs sampling iteration 1/500</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 11/500</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 21/500</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 31/500</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 41/500</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 51/500</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 61/500</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 71/500</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 81/500</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 91/500</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 101/500</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 111/500</span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 121/500</span></a>
+<a class="sourceLine" id="cb4-15" title="15"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 131/500</span></a>
+<a class="sourceLine" id="cb4-16" title="16"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 141/500</span></a>
+<a class="sourceLine" id="cb4-17" title="17"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 151/500</span></a>
+<a class="sourceLine" id="cb4-18" title="18"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 161/500</span></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 171/500</span></a>
+<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 181/500</span></a>
+<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 191/500</span></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 201/500</span></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 211/500</span></a>
+<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 221/500</span></a>
+<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 231/500</span></a>
+<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 241/500</span></a>
+<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 251/500</span></a>
+<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 261/500</span></a>
+<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 271/500</span></a>
+<a class="sourceLine" id="cb4-30" title="30"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 281/500</span></a>
+<a class="sourceLine" id="cb4-31" title="31"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 291/500</span></a>
+<a class="sourceLine" id="cb4-32" title="32"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 301/500</span></a>
+<a class="sourceLine" id="cb4-33" title="33"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 311/500</span></a>
+<a class="sourceLine" id="cb4-34" title="34"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 321/500</span></a>
+<a class="sourceLine" id="cb4-35" title="35"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 331/500</span></a>
+<a class="sourceLine" id="cb4-36" title="36"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 341/500</span></a>
+<a class="sourceLine" id="cb4-37" title="37"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 351/500</span></a>
+<a class="sourceLine" id="cb4-38" title="38"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 361/500</span></a>
+<a class="sourceLine" id="cb4-39" title="39"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 371/500</span></a>
+<a class="sourceLine" id="cb4-40" title="40"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 381/500</span></a>
+<a class="sourceLine" id="cb4-41" title="41"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 391/500</span></a>
+<a class="sourceLine" id="cb4-42" title="42"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 401/500</span></a>
+<a class="sourceLine" id="cb4-43" title="43"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 411/500</span></a>
+<a class="sourceLine" id="cb4-44" title="44"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 421/500</span></a>
+<a class="sourceLine" id="cb4-45" title="45"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 431/500</span></a>
+<a class="sourceLine" id="cb4-46" title="46"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 441/500</span></a>
+<a class="sourceLine" id="cb4-47" title="47"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 451/500</span></a>
+<a class="sourceLine" id="cb4-48" title="48"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 461/500</span></a>
+<a class="sourceLine" id="cb4-49" title="49"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 471/500</span></a>
+<a class="sourceLine" id="cb4-50" title="50"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 481/500</span></a>
+<a class="sourceLine" id="cb4-51" title="51"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 491/500</span></a></code></pre></div>
+<div id="pecularities-of-btm" class="section level2">
+<h2>Pecularities of BTM</h2>
+<p>This is how you should generate <span class="math inline">\(\theta_{t}\)</span> . However, there are many NaN and there are only 1994 rows (<code>trump2k</code> has 2000 tweets) due to empty documents.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">theta &lt;-<span class="st"> </span><span class="kw">predict</span>(trump_btm, <span class="dt">newdata =</span> trump_dat)</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">dim</span>(theta)</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt; [1] 1994    8</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">setdiff</span>(<span class="kw">docid</span>(trump_corpus), <span class="kw">row.names</span>(theta))</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="co">#&gt; [1] &quot;text604&quot;  &quot;text633&quot;  &quot;text659&quot;  &quot;text1586&quot; &quot;text1587&quot; &quot;text1761&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">trump_corpus[<span class="dv">604</span>]</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt; Corpus consisting of 1 document.</span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; text604 :</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt; &quot;http://t.co/PtViAyrO4A&quot;</span></a></code></pre></div>
+<p>Also, the row order is messed up.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">head</span>(<span class="kw">row.names</span>(theta), <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt;   [1] &quot;text1&quot;    &quot;text10&quot;   &quot;text100&quot;  &quot;text1000&quot; &quot;text1001&quot; &quot;text1002&quot;</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;   [7] &quot;text1003&quot; &quot;text1004&quot; &quot;text1005&quot; &quot;text1006&quot; &quot;text1007&quot; &quot;text1008&quot;</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt;  [13] &quot;text1009&quot; &quot;text101&quot;  &quot;text1010&quot; &quot;text1011&quot; &quot;text1012&quot; &quot;text1013&quot;</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt;  [19] &quot;text1014&quot; &quot;text1015&quot; &quot;text1016&quot; &quot;text1017&quot; &quot;text1018&quot; &quot;text1019&quot;</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt;  [25] &quot;text102&quot;  &quot;text1020&quot; &quot;text1021&quot; &quot;text1022&quot; &quot;text1023&quot; &quot;text1024&quot;</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt;  [31] &quot;text1025&quot; &quot;text1026&quot; &quot;text1027&quot; &quot;text1028&quot; &quot;text1029&quot; &quot;text103&quot; </span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt;  [37] &quot;text1030&quot; &quot;text1031&quot; &quot;text1032&quot; &quot;text1033&quot; &quot;text1034&quot; &quot;text1035&quot;</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt;  [43] &quot;text1036&quot; &quot;text1037&quot; &quot;text1038&quot; &quot;text1039&quot; &quot;text104&quot;  &quot;text1040&quot;</span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt;  [49] &quot;text1041&quot; &quot;text1042&quot; &quot;text1043&quot; &quot;text1044&quot; &quot;text1045&quot; &quot;text1046&quot;</span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt;  [55] &quot;text1047&quot; &quot;text1048&quot; &quot;text1049&quot; &quot;text105&quot;  &quot;text1050&quot; &quot;text1051&quot;</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt;  [61] &quot;text1052&quot; &quot;text1053&quot; &quot;text1054&quot; &quot;text1055&quot; &quot;text1056&quot; &quot;text1057&quot;</span></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="co">#&gt;  [67] &quot;text1058&quot; &quot;text1059&quot; &quot;text106&quot;  &quot;text1060&quot; &quot;text1061&quot; &quot;text1062&quot;</span></a>
+<a class="sourceLine" id="cb8-14" title="14"><span class="co">#&gt;  [73] &quot;text1063&quot; &quot;text1064&quot; &quot;text1065&quot; &quot;text1066&quot; &quot;text1067&quot; &quot;text1068&quot;</span></a>
+<a class="sourceLine" id="cb8-15" title="15"><span class="co">#&gt;  [79] &quot;text1069&quot; &quot;text107&quot;  &quot;text1070&quot; &quot;text1071&quot; &quot;text1072&quot; &quot;text1073&quot;</span></a>
+<a class="sourceLine" id="cb8-16" title="16"><span class="co">#&gt;  [85] &quot;text1074&quot; &quot;text1075&quot; &quot;text1076&quot; &quot;text1077&quot; &quot;text1078&quot; &quot;text1079&quot;</span></a>
+<a class="sourceLine" id="cb8-17" title="17"><span class="co">#&gt;  [91] &quot;text108&quot;  &quot;text1080&quot; &quot;text1081&quot; &quot;text1082&quot; &quot;text1083&quot; &quot;text1084&quot;</span></a>
+<a class="sourceLine" id="cb8-18" title="18"><span class="co">#&gt;  [97] &quot;text1085&quot; &quot;text1086&quot; &quot;text1087&quot; &quot;text1088&quot;</span></a></code></pre></div>
+</div>
+</div>
+<div id="oolongs-support-for-btm" class="section level1">
+<h1>Oolong’s support for BTM</h1>
+<p>Oolong has no problem generating word intrusion test for BTM like you do with other topic models.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm)</a>
+<a class="sourceLine" id="cb9-2" title="2">oolong</a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt; An oolong test object with k = 8, 0 coded.</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt; Use the method $do_word_intrusion_test() to do word intrusion test.</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co">#&gt; Use the method $lock() to finalize this object and see the results.</span></a></code></pre></div>
+<p>For generating topic intrusion tests, however, you must provide the data frame you used for training (in this case <code>trump_dat</code>). Your <code>input_corpus</code> must be a quanteda corpus too.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus, <span class="dt">btm_dataframe =</span> trump_dat)</a>
+<a class="sourceLine" id="cb10-2" title="2">oolong</a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; An oolong test object with k = 8, 0 coded.</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; Use the method $do_word_intrusion_test() to do word intrusion test.</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; With 20 cases of topic intrusion test. 0 coded.</span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt; Use the method $do_topic_intrusion_test() to do topic intrusion test.</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt; Use the method $lock() to finalize this object and see the results.</span></a></code></pre></div>
+<p><code>btm_dataframe</code> must not be NULL.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus)</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="co">#&gt; Error in .extract_ingredients.input_model_s3_btm(.convert_input_model_s3(input_model), : You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
+<p><code>input_corpus</code> must be a quanteda corpus.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump2k, <span class="dt">btm_dataframe =</span> trump_dat)</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; Error in .extract_ingredients.input_model_s3_btm(.convert_input_model_s3(input_model), : You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>University of Mannheim<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

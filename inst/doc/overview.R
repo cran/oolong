@@ -1,47 +1,48 @@
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
-)
+  )
+set.seed(46709394)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(oolong)
 library(stm)
 library(quanteda)
 library(dplyr)
 
-## ----example-------------------------------------------------------------
+## ----example------------------------------------------------------------------
 abstracts_stm
 
-## ----createtest----------------------------------------------------------
+## ----createtest---------------------------------------------------------------
 oolong_test <- create_oolong(abstracts_stm)
 oolong_test
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  oolong_test$do_word_intrusion_test()
 
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 ### Mock this process
 oolong_test$.__enclos_env__$private$test_content$word$answer <- oolong_test$.__enclos_env__$private$test_content$word$intruder
 oolong_test$.__enclos_env__$private$test_content$word$answer[1] <- "wronganswer"
 
-## ----lock----------------------------------------------------------------
+## ----lock---------------------------------------------------------------------
 oolong_test$lock()
 oolong_test
 
-## ----newgroup5-----------------------------------------------------------
+## ----newgroup5----------------------------------------------------------------
 library(tibble)
 abstracts
 
-## ----createtest2---------------------------------------------------------
+## ----createtest2--------------------------------------------------------------
 oolong_test <- create_oolong(abstracts_stm, abstracts$text)
 oolong_test
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  oolong_test$do_topic_intrusion_test()
 #  oolong_test$lock()
 
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 genius_topic <- function(obj1) {
     obj1$.__enclos_env__$private$test_content$topic$answer <- obj1$.__enclos_env__$private$test_content$topic$intruder
     return(obj1)
@@ -54,22 +55,22 @@ oolong_test <- genius_word(genius_topic(oolong_test))
 oolong_test$.__enclos_env__$private$test_content$topic$answer[2] <- sample(oolong_test$.__enclos_env__$private$test_content$topic$candidates[[2]], 1)
 oolong_test$lock()
 
-## ----topic_res-----------------------------------------------------------
+## ----topic_res----------------------------------------------------------------
 oolong_test
 
-## ----step0, eval = FALSE-------------------------------------------------
+## ----step0, eval = FALSE------------------------------------------------------
 #  dfm(abstracts$text, tolower = TRUE, stem = TRUE, remove = stopwords('english'), remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE, remove_hyphens = TRUE) %>% dfm_trim(min_docfreq = 5, max_docfreq = 1000) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
 #  docvars(abstracts_dfm, "title") <- abstracts$title
 #  abstracts_dfm %>% convert(to = "stm", omit_empty = FALSE) -> abstracts_stm
 #  abstracts_stm <- stm(abstracts_stm$documents, abstracts_stm$vocab, data =abstracts_stm$meta, K = 10, seed = 42)
 
-## ----step1---------------------------------------------------------------
+## ----step1--------------------------------------------------------------------
 oolong_test_rater1 <- create_oolong(abstracts_stm, abstracts$text)
 
-## ----step2---------------------------------------------------------------
+## ----step2--------------------------------------------------------------------
 oolong_test_rater2 <- clone_oolong(oolong_test_rater1)
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  ## Let rater 1 do the test.
 #  oolong_test_rater1$do_word_intrusion_test()
 #  oolong_test_rater1$do_topic_intrusion_test()
@@ -80,7 +81,7 @@ oolong_test_rater2 <- clone_oolong(oolong_test_rater1)
 #  oolong_test_rater2$do_topic_intrusion_test()
 #  oolong_test_rater2$lock()
 
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 ### Mock this process
 set.seed(46709394)
 oolong_test_rater1 <- oolong:::.monkey_test(oolong_test_rater1, intelligent = 0.3)
@@ -88,35 +89,35 @@ oolong_test_rater2 <- oolong:::.monkey_test(oolong_test_rater2, intelligent = 0)
 oolong_test_rater1$lock()
 oolong_test_rater2$lock()
 
-## ---- step3--------------------------------------------------------------
+## ---- step3-------------------------------------------------------------------
 summarize_oolong(oolong_test_rater1, oolong_test_rater2)
 
-## ----warplda-------------------------------------------------------------
+## ----warplda------------------------------------------------------------------
 abstracts_warplda
 
-## ----warplda2------------------------------------------------------------
+## ----warplda2-----------------------------------------------------------------
 ### Just word intrusion test.
 oolong_test <- create_oolong(abstracts_warplda)
 oolong_test
 
-## ----warplda3------------------------------------------------------------
+## ----warplda3-----------------------------------------------------------------
 abstracts_dfm
 
-## ----warplda4------------------------------------------------------------
+## ----warplda4-----------------------------------------------------------------
 oolong_test <- create_oolong(abstracts_warplda, abstracts$text, input_dfm = abstracts_dfm)
 oolong_test
 
-## ----trump2k-------------------------------------------------------------
+## ----trump2k------------------------------------------------------------------
 tibble(text = trump2k)
 
-## ----goldstandard--------------------------------------------------------
+## ----goldstandard-------------------------------------------------------------
 oolong_test <- create_oolong(input_corpus = trump2k, construct = "positive")
 oolong_test
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  oolong_test$do_gold_standard_test()
 
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 oolong_test$.__enclos_env__$private$test_content$gold_standard <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
@@ -144,14 +145,14 @@ NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 NA)), row.names = c(NA, -20L), class = c("tbl_df", "tbl", "data.frame"
 ))
 
-## ----gs_locking----------------------------------------------------------
+## ----gs_locking---------------------------------------------------------------
 oolong_test$lock()
 oolong_test
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 oolong_test$turn_gold()
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 gold_standard <- oolong_test$turn_gold()
 dfm(gold_standard, remove_punct = TRUE) %>% dfm_lookup(afinn) %>% quanteda::convert(to = "data.frame") %>%
     mutate(matching_word_valence = (neg5 * -5) + (neg4 * -4) + (neg3 * -3) + (neg2 * -2) + (neg1 * -1)
@@ -160,20 +161,20 @@ dfm(gold_standard, remove_punct = TRUE) %>% dfm_lookup(afinn) %>% quanteda::conv
     pull(afinn_score) -> all_afinn_score
 all_afinn_score
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 summarize_oolong(oolong_test, target_value = all_afinn_score)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 trump <- create_oolong(input_corpus = trump2k, exact_n = 40)
 trump2 <- clone_oolong(trump)
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  trump$do_gold_standard_test()
 #  trump2$do_gold_standard_test()
 #  trump$lock()
 #  trump2$lock()
 
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 trump$.__enclos_env__$private$test_content$gold_standard <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
@@ -230,7 +231,7 @@ NA)), row.names = c(NA, -20L), class = c("tbl_df", "tbl", "data.frame"
 trump$lock()
 trump2$lock()
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 gold_standard <- trump$turn_gold()
 dfm(gold_standard, remove_punct = TRUE) %>% dfm_lookup(afinn) %>% quanteda::convert(to = "data.frame") %>%
     mutate(matching_word_valence = (neg5 * -5) + (neg4 * -4) + (neg3 * -3) + (neg2 * -2) + (neg1 * -1)
@@ -238,12 +239,12 @@ dfm(gold_standard, remove_punct = TRUE) %>% dfm_lookup(afinn) %>% quanteda::conv
            base = ntoken(gold_standard, remove_punct = TRUE), afinn_score = matching_word_valence / base) %>%
     pull(afinn_score) -> target_value
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 res <- summarize_oolong(trump, trump2, target_value = target_value)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 res
 
-## ----diagnosis-----------------------------------------------------------
+## ----diagnosis----------------------------------------------------------------
 plot(res)
 

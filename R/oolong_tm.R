@@ -10,7 +10,6 @@
     return(tibble::tibble(position = position, candidates = list(res)))
 }
 
-
 .generate_candidates <- function(i, terms, n_top_terms = 5, bottom_terms_percentile = 0.6, all_terms) {
     good_terms <- head(terms[i,], n_top_terms)
     term_pos <- match(all_terms, terms[i,])
@@ -36,25 +35,27 @@
 }
 
 .UI_WORD_INTRUSION_TEST <- miniUI::miniPage(
-                                 miniUI::gadgetTitleBar("oolong"),
-                                 miniUI::miniContentPanel(
-                                             shiny::uiOutput("current_topic"),
-                                             shiny::uiOutput("intruder_choice"),
-                                             shiny::actionButton("confirm", "confirm"),
-                                             shiny::actionButton("nextq", "skip")
-                                         )
-                             )
+    miniUI::gadgetTitleBar("oolong"),
+    miniUI::miniContentPanel(
+        shiny::uiOutput("current_topic"),
+        shiny::uiOutput("intruder_choice"),
+        shiny::actionButton("confirm", "confirm"),
+        shiny::actionButton("nextq", "skip"),
+        shiny::actionButton("ff", "jump to uncoded item")
+    )
+)
 
 .UI_TOPIC_INTRUSION_TEST <- miniUI::miniPage(
-                                        miniUI::gadgetTitleBar("oolong"),
-                                        miniUI::miniContentPanel(
-                                                    shiny::uiOutput("current_topic"),
-                                                    shiny::uiOutput("text_content"),
-                                                    shiny::uiOutput("intruder_choice"),
-                                                    shiny::actionButton("confirm", "confirm"),
-                                                    shiny::actionButton("nextq", "skip")
-                                                )
-                                    )
+    miniUI::gadgetTitleBar("oolong"),
+    miniUI::miniContentPanel(
+        shiny::uiOutput("current_topic"),
+        shiny::uiOutput("text_content"),
+        shiny::uiOutput("intruder_choice"),
+        shiny::actionButton("confirm", "confirm"),
+        shiny::actionButton("nextq", "skip"),
+        shiny::actionButton("ff", "jump to uncoded item")
+    )
+)
 
 .ren_word_intrusion_test <- function(output, test_content, res) {
     .ren_choices <- function(test_content, res) {
@@ -121,10 +122,19 @@
             }
             output <- .ren(output, test_content, res)
         })
+        shiny::observeEvent(input$ff, {
+            res_with_na <- which(is.na(res$intruder))
+            if (length(res_with_na) == 0) {
+                res$current_row <- res$current_row
+            } else {
+                res$current_row <- min(res_with_na)
+            }
+            output <- .ren(output, test_content, res)
+        })
         shiny::observeEvent(input$done, (
             shiny::stopApp(res$intruder)
         ))
-
+        
     }
     return(shiny::shinyApp(ui, server))
 }
@@ -133,32 +143,19 @@
     shiny::runGadget(.gen_shinyapp(test_content = test_content, ui = ui, .ren = .ren))
 }
 
+### S3 generic
 
-.generate_word_intrusion_test <- function(input_model, n_top_terms = 5, bottom_terms_percentile = 0.6, difficulty = 1, use_frex_words= FALSE) {
-    if ("WarpLDA" %in% class(input_model)) {
-        K <- input_model$.__enclos_env__$private$n_topics
-        V <- length(input_model$.__enclos_env__$private$vocabulary)
-        terms <- t(input_model$get_top_words(n = V, lambda = difficulty))
-        all_terms <- unique(as.vector(terms[,seq_len(n_top_terms)]))
-    } else if ("STM" %in% class(input_model)) {
-        K <- input_model$settings$dim$K
-        V <- input_model$settings$dim$V
-        if (use_frex_words) {
-            terms <- stm::labelTopics(input_model, n = input_model$settings$dim$V, frexweight = difficulty)$frex
-        } else {
-            terms <- stm::labelTopics(input_model, n = input_model$settings$dim$V)$prob
-        }
-        all_terms <- unique(as.vector(terms[,seq_len(n_top_terms)]))
-    } else if ("topicmodels" == attr(class(input_model), "package")) {
-        K <- input_model@k
-        V <- length(input_model@terms)
-        terms <- t(topicmodels::terms(input_model, k = V))
-        all_terms <- unique(as.vector(terms[,seq_len(n_top_terms)]))
-    }
-    test_content <- purrr::map_dfr(seq_len(K), .generate_candidates, terms = terms, all_terms = all_terms, bottom_terms_percentile = bottom_terms_percentile)
-    return(test_content)
+.extract_ingredients <- function(input_model_s3, ...) {
+    UseMethod(".extract_ingredients", input_model_s3)
 }
 
+## every format should create a s3 method '.extract_ingredients' (e.g. .extract_ingredients.input_model_s3_warplda) to extract K (# of topics), V (# of terms), terms (a term matrix, K x V) and all_terms, model_terms and theta.
+## refer to oolong_stm.R for an example
+
+.generate_word_intrusion_test <- function(ingredients, bottom_terms_percentile = 0.6, n_top_terms) {
+    test_content <- purrr::map_dfr(seq_len(ingredients$K), .generate_candidates, terms = ingredients$terms, all_terms = ingredients$all_terms, bottom_terms_percentile = bottom_terms_percentile, n_top_terms = n_top_terms)
+    return(test_content)
+}
 
 .sample_corpus <- function(input_corpus, exact_n = 30) {
     sample(seq_len(length(input_corpus)), exact_n)
@@ -168,7 +165,7 @@
     candidates[position]
 }
 
-.generate_topic_frame <- function(i, target_text, target_theta, model_terms, k = k, n_top_topics = 3, n_topiclabel_words = 8) {
+.generate_topic_frame <- function(i, target_text, target_theta, model_terms, k = k, n_top_topics = 3) {
     text <- target_text[i]
     theta_rank <- rank(target_theta[i,])
     theta_pos <- which(theta_rank > (k - n_top_topics))
@@ -183,9 +180,12 @@
     return(topic_frame)
 }
 
-.generate_topic_intrusion_test <- function(input_model, input_corpus, exact_n = NULL, frac = NULL, n_top_topics = 3, n_topiclabel_words = 8, difficulty = 1, use_frex_words = FALSE, input_dfm = NULL) {
+.generate_topic_intrusion_test <- function(input_corpus, ingredients, exact_n = NULL, frac = NULL, n_top_topics = 3, n_topiclabel_words = 8) {
     if ("corpus" %in% class(input_corpus)) {
         input_corpus <- quanteda::texts(input_corpus)
+    }
+    if (n_top_topics + 1 >= ingredients$K) {
+        stop("n_top_topics + 1 must be smaller than K.")
     }
     if (!is.null(frac) & is.null(exact_n)) {
         stopifnot(frac >= 0 & frac <= 1)
@@ -199,27 +199,10 @@
         exact_n <- length(input_corpus)
     }
     sample_vec <- .sample_corpus(input_corpus, exact_n)
-    if ("WarpLDA" %in% class(input_model)) {
-        if (is.null(input_dfm)) {
-            stop("input_dfm must not be NULL when input_model is a WarpLDA object.")
-        }
-        model_terms <- t(input_model$get_top_words(n = n_topiclabel_words, lambda = difficulty))
-        target_theta <- input_model$transform(input_dfm)[sample_vec, ]
-    } else if ("STM" %in% class(input_model)) {
-        if (use_frex_words) {
-            model_terms <- stm::labelTopics(input_model, n = n_topiclabel_words, frexweight = difficulty)$frex
-        } else {
-            model_terms <- stm::labelTopics(input_model, n = n_topiclabel_words)$prob
-        }
-        target_theta <- input_model$theta[sample_vec, ]
-    } else if ("topicmodels" == attr(class(input_model), "package")) {
-        model_terms <- t(topicmodels::terms(input_model, k = n_topiclabel_words))
-        dimnames(model_terms)[[1]] <- NULL
-        target_theta <- topicmodels::posterior(input_model)$topic[sample_vec,]
-    }
+    target_theta <- ingredients$theta[sample_vec,]
     k <- ncol(target_theta)
     target_text <- input_corpus[sample_vec]
-    test_content <- purrr::map_dfr(seq_len(exact_n), .generate_topic_frame, target_text = target_text, target_theta = target_theta, model_terms = model_terms, k = k, n_top_topics = n_top_topics, n_topiclabel_words = n_topiclabel_words)
+    test_content <- purrr::map_dfr(seq_len(exact_n), .generate_topic_frame, target_text = target_text, target_theta = target_theta, model_terms = ingredients$model_terms, k = k, n_top_topics = n_top_topics)
     return(test_content)
 }
 
@@ -228,27 +211,14 @@
     return(test_content)
 }
 
-### print the ... if boolean_test is true
-.cp <- function(boolean_test, ...) {
-    if (boolean_test) {
-        cat(paste0(..., "\n"))
-    }
-}
-
-### stop if boolean_test is true and print the ...
-.cstop <- function(boolean_test, ...) {
-    if (boolean_test) {
-        stop(...)
-    }
-}
-
-.generate_test_content <- function(input_model, input_corpus = NULL, n_top_terms = 5, bottom_terms_percentile = 0.6, exact_n = NULL, frac = 0.01, n_top_topics = 3, n_topiclabel_words = 8, difficulty = 1, use_frex_words = FALSE, input_dfm = NULL) {
+.generate_test_content <- function(input_model, input_corpus = NULL, n_top_terms = 5, bottom_terms_percentile = 0.6, exact_n = NULL, frac = 0.01, n_top_topics = 3, n_topiclabel_words = 8, difficulty = 1, use_frex_words = FALSE, input_dfm = NULL, btm_dataframe = NULL) {
+    ingredients <- .extract_ingredients(.convert_input_model_s3(input_model), n_top_terms = n_top_terms, difficulty = difficulty, need_topic = !is.null(input_corpus), n_topiclabel_words = n_topiclabel_words, input_dfm = input_dfm, use_frex_words = use_frex_words, input_corpus = input_corpus, btm_dataframe = btm_dataframe)
     test_content <- list()
-    test_content$word <- .generate_word_intrusion_test(input_model, n_top_terms = n_top_terms, bottom_terms_percentile = bottom_terms_percentile, difficulty = difficulty, use_frex_words = use_frex_words)
-    if (is.null(input_corpus)) {
+    test_content$word <- .generate_word_intrusion_test(ingredients, bottom_terms_percentile = bottom_terms_percentile, n_top_terms = n_top_terms)
+    if (is.null(ingredients$theta)) {
         test_content$topic <- NULL
     } else {
-        test_content$topic <- .generate_topic_intrusion_test(input_model = input_model, input_corpus = input_corpus, exact_n = exact_n, frac = frac, n_top_topics = n_top_topics, n_topiclabel_words = n_topiclabel_words, difficulty = difficulty, use_frex_words = use_frex_words, input_dfm = input_dfm)
+        test_content$topic <- .generate_topic_intrusion_test(input_corpus = input_corpus, ingredients = ingredients, exact_n = exact_n, frac = frac, n_top_topics = n_top_topics, n_topiclabel_words = n_topiclabel_words)
     }
     return(test_content)
 }
@@ -275,37 +245,37 @@
 
 Oolong_test_tm <-
     R6::R6Class(
-            "oolong_test_tm",
-            inherit = Oolong_test,
-            public = list(
-                initialize = function(input_model, input_corpus = NULL, n_top_terms = 5, bottom_terms_percentile = 0.6, exact_n = 15, frac = NULL, n_top_topics = 3, n_topiclabel_words = 8, difficulty = 1, use_frex_words = FALSE, input_dfm = NULL) {
-                    private$test_content <- .generate_test_content(input_model, input_corpus, n_top_terms, bottom_terms_percentile, exact_n, frac, n_top_topics, n_topiclabel_words, difficulty, use_frex_words = use_frex_words, input_dfm = input_dfm)
-                    private$hash <- digest::digest(private$test_content, algo = "sha1")
-                },
-                print = function() {
-                    .cp(TRUE, "An oolong test object with k = ", nrow(private$test_content$word), ", ", sum(!is.na(private$test_content$word$answer)), " coded.")
-                    .cp(private$finalized, round(.cal_model_precision(private$test_content$word), 3),"%  precision")
-                    .cp(!private$finalized, "Use the method $do_word_intrusion_test() to do word intrusion test.")
-                    .cp(!is.null(private$test_content$topic), "With ", nrow(private$test_content$topic) , " cases of topic intrusion test. ", sum(!is.na(private$test_content$topic$answer)), " coded.")
-                    .cp(!is.null(private$test_content$topic) & !private$finalized, "Use the method $do_topic_intrusion_test() to do topic intrusion test.")
-                    .cp(private$finalized & !is.null(private$test_content$topic), "TLO: ", round(.cal_tlo(private$test_content$topic, mean_value = TRUE), 3))
-                    .cp(!private$finalized, "Use the method $lock() to finalize this object and see the results.")
-                },
-                do_word_intrusion_test = function() {
-                    private$check_finalized()
-                    private$test_content$word <- .do_oolong_test(private$test_content$word)
-                },
-                do_topic_intrusion_test = function() {
-                    private$check_finalized()
-                    .cstop(is.null(private$test_content$topic), "No topic intrusion test cases. Create the oolong test with the corpus to generate topic intrusion test cases.")
-                    private$test_content$topic <- .do_oolong_test(private$test_content$topic, ui = .UI_TOPIC_INTRUSION_TEST, .ren = .ren_topic_intrusion_test)
-                }
-            ),
-            private = list(
-                hash = NULL,
-                test_content = list(),
-                finalized = FALSE
-            )
+        "oolong_test_tm",
+        inherit = Oolong_test,
+        public = list(
+            initialize = function(input_model, input_corpus = NULL, n_top_terms = 5, bottom_terms_percentile = 0.6, exact_n = 15, frac = NULL, n_top_topics = 3, n_topiclabel_words = 8, difficulty = 1, use_frex_words = FALSE, input_dfm = NULL, btm_dataframe = NULL) {
+                private$test_content <- .generate_test_content(input_model, input_corpus, n_top_terms, bottom_terms_percentile, exact_n, frac, n_top_topics, n_topiclabel_words, difficulty, use_frex_words = use_frex_words, input_dfm = input_dfm, btm_dataframe = btm_dataframe)
+                private$hash <- digest::digest(private$test_content, algo = "sha1")
+            },
+            print = function() {
+                .cp(TRUE, "An oolong test object with k = ", nrow(private$test_content$word), ", ", sum(!is.na(private$test_content$word$answer)), " coded.")
+                .cp(private$finalized, round(.cal_model_precision(private$test_content$word), 3),"%  precision")
+                .cp(!private$finalized, "Use the method $do_word_intrusion_test() to do word intrusion test.")
+                .cp(!is.null(private$test_content$topic), "With ", nrow(private$test_content$topic) , " cases of topic intrusion test. ", sum(!is.na(private$test_content$topic$answer)), " coded.")
+                .cp(!is.null(private$test_content$topic) & !private$finalized, "Use the method $do_topic_intrusion_test() to do topic intrusion test.")
+                .cp(private$finalized & !is.null(private$test_content$topic), "TLO: ", round(.cal_tlo(private$test_content$topic, mean_value = TRUE), 3))
+                .cp(!private$finalized, "Use the method $lock() to finalize this object and see the results.")
+            },
+            do_word_intrusion_test = function() {
+                private$check_finalized()
+                private$test_content$word <- .do_oolong_test(private$test_content$word)
+            },
+            do_topic_intrusion_test = function() {
+                private$check_finalized()
+                .cstop(is.null(private$test_content$topic), "No topic intrusion test cases. Create the oolong test with the corpus to generate topic intrusion test cases.")
+                private$test_content$topic <- .do_oolong_test(private$test_content$topic, ui = .UI_TOPIC_INTRUSION_TEST, .ren = .ren_topic_intrusion_test)
+            }
+        ),
+        private = list(
+            hash = NULL,
+            test_content = list(),
+            finalized = FALSE
+        )
         )
 
 

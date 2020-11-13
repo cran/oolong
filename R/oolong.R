@@ -50,8 +50,8 @@ Oolong_test <- R6::R6Class(
 #'   \item{\code{$turn_gold()}}{(gs) convert the oolong object into a quanteda compatible corpus.}
 #' }
 #' For more details, please see the overview vignette: \code{vignette("overview", package = "oolong")}
-#' @param input_model (gs/tm) a STM, WarpLDA or topicmodels object; if it is NULL, create_oolong assumes that you want to create gold standard.
-#' @param input_corpus (gs/tm) if input_model is not null, it should be the corpus (character vector or quanteda::corpus object) to generate the model object. If input_model and input_corpus are not NULL, topic intrusion test cases are generated. If input_model is null, it generates gold standard test cases.
+#' @param input_model (gs/tm) a STM, WarpLDA, topicmodels or BTM object; if it is NULL, create_oolong assumes that you want to create gold standard.
+#' @param input_corpus (gs/tm) if input_model is not null, it should be the corpus (character vector or quanteda::corpus object) to generate the model object. If input_model and input_corpus are not NULL, topic intrusion test cases are generated. If input_model is a BTM object, this argument is ignored. If input_model is null, it generates gold standard test cases.
 #' @param n_top_terms (tm) integer, number of top topic words to be included in the candidates of word intrusion test. 
 #' @param bottom_terms_percentile (tm) double, a term is considered to be an word intruder when its theta less than the percentile of this theta, must be within the range of 0 to 1
 #' @param exact_n (tm/gs) integer, number of topic intrusion test cases to generate, ignore if frac is not NULL
@@ -62,6 +62,7 @@ Oolong_test <- R6::R6Class(
 #' @param difficulty (tm) double, adjust the difficulty of the test. Higher value indicates higher difficulty and must be within the range of 0 to 1, no effect for STM if use_frex_words is FALSE. Ignore for topicmodels objects.
 #' @param input_dfm (tm) a dfm object used for training the input_model, if input_model is a WarpLDA object
 #' @param construct (gs) string, an adjective to describe the construct you want your coders to code the the gold standard test cases.
+#' @param btm_dataframe (tm) dataframe used for training the input_model, if input_model is a BTM object
 #' @return an oolong test object.
 #' @examples
 #' ## Creation of oolong test with only word intrusion test
@@ -72,14 +73,14 @@ Oolong_test <- R6::R6Class(
 #' oolong_test <- create_oolong(input_model = abstracts_stm, input_corpus = abstracts$text)
 #' ## Creation of gold standard
 #' oolong_test <- create_oolong(input_corpus = trump2k)
-#' @author Chung-hong Chan
+#' @author Chung-hong Chan, Marius Sältzer
 #' @references
 #'   Chang, J., Gerrish, S., Wang, C., Boyd-Graber, J. L., & Blei, D. M. (2009). Reading tea leaves: How humans interpret topic models. In Advances in neural information processing systems (pp. 288-296).
 #'
 #'   Song et al. (2020) In validations we trust? The impact of imperfect human annotations as a gold standard on the quality of validation of automated content analysis. Political Communication.
 #' 
 #' @export
-create_oolong <- function(input_model = NULL, input_corpus = NULL, n_top_terms = 5, bottom_terms_percentile = 0.6, exact_n = NULL, frac = 0.01, n_top_topics = 3, n_topiclabel_words = 8, use_frex_words = FALSE, difficulty = 1, input_dfm = NULL, construct = "positive") {
+create_oolong <- function(input_model = NULL, input_corpus = NULL, n_top_terms = 5, bottom_terms_percentile = 0.6, exact_n = NULL, frac = 0.01, n_top_topics = 3, n_topiclabel_words = 8, use_frex_words = FALSE, difficulty = 1, input_dfm = NULL, construct = "positive", btm_dataframe = NULL) {
     if (is.null(input_model) & is.null(input_corpus)) {
         stop("input_model and input_corpus cannot be both NULL.")
     }
@@ -89,23 +90,10 @@ create_oolong <- function(input_model = NULL, input_corpus = NULL, n_top_terms =
         }
     }
     if (!is.null(input_model)) {
-        return(Oolong_test_tm$new(input_model = input_model, input_corpus = input_corpus, n_top_terms = n_top_terms, bottom_terms_percentile = bottom_terms_percentile, exact_n = exact_n, frac = frac, n_top_topics = n_top_topics, n_topiclabel_words = n_topiclabel_words, difficulty = difficulty, use_frex_words = use_frex_words, input_dfm = input_dfm))
+        return(Oolong_test_tm$new(input_model = input_model, input_corpus = input_corpus, n_top_terms = n_top_terms, bottom_terms_percentile = bottom_terms_percentile, exact_n = exact_n, frac = frac, n_top_topics = n_top_topics, n_topiclabel_words = n_topiclabel_words, difficulty = difficulty, use_frex_words = use_frex_words, input_dfm = input_dfm, btm_dataframe = btm_dataframe))
     } else {
         return(Oolong_test_gs$new(input_corpus = input_corpus, exact_n = exact_n, frac = frac, construct = construct))
     }
-}
-
-.is_topic_model <- function(x) {
-    if (any(class(x) %in% c("WarpLDA", "STM"))) {
-        return(TRUE)
-    }
-    if (is.null(attr(class(x), "package"))) {
-        return(FALSE)
-    }
-    if ("topicmodels" == attr(class(x), "package")) {
-        return(TRUE)
-    }
-    return(FALSE)
 }
 
 #' Clone an oolong object
