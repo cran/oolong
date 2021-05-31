@@ -7,15 +7,15 @@ set.seed(46709394)
 
 ## -----------------------------------------------------------------------------
 library(oolong)
-library(stm)
+library(keyATM)
 library(quanteda)
 library(dplyr)
 
 ## ----example------------------------------------------------------------------
-abstracts_stm
+abstracts_keyatm
 
 ## ----createtest---------------------------------------------------------------
-oolong_test <- create_oolong(abstracts_stm)
+oolong_test <- wi(abstracts_keyatm, userid = "Hadley")
 oolong_test
 
 ## ---- eval = FALSE------------------------------------------------------------
@@ -23,10 +23,26 @@ oolong_test
 
 ## ---- include = FALSE---------------------------------------------------------
 ### Mock this process
-oolong_test$.__enclos_env__$private$test_content$word$answer <- oolong_test$.__enclos_env__$private$test_content$word$intruder
-oolong_test$.__enclos_env__$private$test_content$word$answer[1] <- "wronganswer"
+oolong_test$.__enclos_env__$private$test_content$wi$answer <- oolong_test$.__enclos_env__$private$test_content$wi$intruder
+oolong_test$.__enclos_env__$private$test_content$wi$answer[1] <- "wronganswer"
 
 ## ----lock---------------------------------------------------------------------
+oolong_test$lock()
+oolong_test
+
+## ----wsi1---------------------------------------------------------------------
+oolong_test <- wsi(abstracts_keyatm, userid = "Garrett")
+oolong_test
+
+## ----wsi2, eval = FALSE-------------------------------------------------------
+#  oolong_test$do_word_set_intrusion_test()
+
+## ---- include = FALSE---------------------------------------------------------
+### Mock this process
+oolong_test$.__enclos_env__$private$test_content$wsi$answer <- oolong_test$.__enclos_env__$private$test_content$wsi$intruder
+oolong_test$.__enclos_env__$private$test_content$wsi$answer[1] <- "wronganswer"
+
+## ----wsi3---------------------------------------------------------------------
 oolong_test$lock()
 oolong_test
 
@@ -35,7 +51,7 @@ library(tibble)
 abstracts
 
 ## ----createtest2--------------------------------------------------------------
-oolong_test <- create_oolong(abstracts_stm, abstracts$text)
+oolong_test <- ti(abstracts_keyatm, abstracts$text, userid = "Julia")
 oolong_test
 
 ## ---- eval = FALSE------------------------------------------------------------
@@ -44,39 +60,40 @@ oolong_test
 
 ## ---- include = FALSE---------------------------------------------------------
 genius_topic <- function(obj1) {
-    obj1$.__enclos_env__$private$test_content$topic$answer <- obj1$.__enclos_env__$private$test_content$topic$intruder
+    obj1$.__enclos_env__$private$test_content$ti$answer <- obj1$.__enclos_env__$private$test_content$ti$intruder
     return(obj1)
 }
 genius_word <- function(obj1) {
-    obj1$.__enclos_env__$private$test_content$word$answer <- obj1$.__enclos_env__$private$test_content$word$intruder
+    obj1$.__enclos_env__$private$test_content$wi$answer <- obj1$.__enclos_env__$private$test_content$wi$intruder
     return(obj1)
 }
 oolong_test <- genius_word(genius_topic(oolong_test))
-oolong_test$.__enclos_env__$private$test_content$topic$answer[2] <- sample(oolong_test$.__enclos_env__$private$test_content$topic$candidates[[2]], 1)
+oolong_test$.__enclos_env__$private$test_content$ti$answer[2] <- sample(oolong_test$.__enclos_env__$private$test_content$ti$candidates[[2]], 1)
 oolong_test$lock()
 
 ## ----topic_res----------------------------------------------------------------
 oolong_test
 
+## ---- eval = FALSE------------------------------------------------------------
+#  dfm(abstracts$text, tolower = TRUE, stem = TRUE, remove = stopwords('english'), remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE, remove_hyphens = TRUE) %>% dfm_trim(min_docfreq = 3, max_docfreq = 500) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
+
 ## ----step0, eval = FALSE------------------------------------------------------
-#  dfm(abstracts$text, tolower = TRUE, stem = TRUE, remove = stopwords('english'), remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE, remove_hyphens = TRUE) %>% dfm_trim(min_docfreq = 5, max_docfreq = 1000) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
-#  docvars(abstracts_dfm, "title") <- abstracts$title
-#  abstracts_dfm %>% convert(to = "stm", omit_empty = FALSE) -> abstracts_stm
-#  abstracts_stm <- stm(abstracts_stm$documents, abstracts_stm$vocab, data =abstracts_stm$meta, K = 10, seed = 42)
+#  require(keyATM)
+#  abstracts_keyatm <- keyATM(keyATM_read(abstracts_dfm), no_keyword_topics = 0, keywords = abstracts_dictionary, model = "base", options = list(seed = 46709394))
 
 ## ----step1--------------------------------------------------------------------
-oolong_test_rater1 <- create_oolong(abstracts_stm, abstracts$text)
+oolong_test_rater1 <- witi(abstracts_keyatm, abstracts$text, userid = "Yihui")
 
 ## ----step2--------------------------------------------------------------------
-oolong_test_rater2 <- clone_oolong(oolong_test_rater1)
+oolong_test_rater2 <- clone_oolong(oolong_test_rater1, userid = "Jenny")
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  ## Let rater 1 do the test.
+#  ## Let Yihui do the test.
 #  oolong_test_rater1$do_word_intrusion_test()
 #  oolong_test_rater1$do_topic_intrusion_test()
 #  oolong_test_rater1$lock()
 #  
-#  ## Let rater 2 do the test.
+#  ## Let Jenny do the test.
 #  oolong_test_rater2$do_word_intrusion_test()
 #  oolong_test_rater2$do_topic_intrusion_test()
 #  oolong_test_rater2$lock()
@@ -97,28 +114,36 @@ abstracts_warplda
 
 ## ----warplda2-----------------------------------------------------------------
 ### Just word intrusion test.
-oolong_test <- create_oolong(abstracts_warplda)
+oolong_test <- wi(abstracts_warplda, userid = "Lionel")
 oolong_test
 
 ## ----warplda3-----------------------------------------------------------------
 abstracts_dfm
 
-## ----warplda4-----------------------------------------------------------------
-oolong_test <- create_oolong(abstracts_warplda, abstracts$text, input_dfm = abstracts_dfm)
+## ----warplda4, , message = FALSE, results = 'hide', warning = FALSE-----------
+oolong_test <- witi(abstracts_warplda, abstracts$text, input_dfm = abstracts_dfm, userid = "Mara")
+
+## ----warplda5-----------------------------------------------------------------
 oolong_test
+
+## -----------------------------------------------------------------------------
+wi(newsgroup_nb)
+
+## -----------------------------------------------------------------------------
+wsi(newsgroup_nb)
 
 ## ----trump2k------------------------------------------------------------------
 tibble(text = trump2k)
 
 ## ----goldstandard-------------------------------------------------------------
-oolong_test <- create_oolong(input_corpus = trump2k, construct = "positive")
+oolong_test <- gs(input_corpus = trump2k, construct = "positive", userid = "Joe")
 oolong_test
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  oolong_test$do_gold_standard_test()
 
 ## ---- include = FALSE---------------------------------------------------------
-oolong_test$.__enclos_env__$private$test_content$gold_standard <- 
+oolong_test$.__enclos_env__$private$test_content$gs <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
 "\"@KdanielsK: @misstcassidy @AllAboutTheTea_ @realDonaldTrump My money is on Kenya getting fired first.\"", 
@@ -165,8 +190,8 @@ all_afinn_score
 summarize_oolong(oolong_test, target_value = all_afinn_score)
 
 ## -----------------------------------------------------------------------------
-trump <- create_oolong(input_corpus = trump2k, exact_n = 40)
-trump2 <- clone_oolong(trump)
+trump <- gs(input_corpus = trump2k, exact_n = 40, userid = "JJ")
+trump2 <- clone_oolong(trump, userid = "Winston")
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  trump$do_gold_standard_test()
@@ -175,7 +200,7 @@ trump2 <- clone_oolong(trump)
 #  trump2$lock()
 
 ## ---- include = FALSE---------------------------------------------------------
-trump$.__enclos_env__$private$test_content$gold_standard <- 
+trump$.__enclos_env__$private$test_content$gs <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
 "\"@KdanielsK: @misstcassidy @AllAboutTheTea_ @realDonaldTrump My money is on Kenya getting fired first.\"", 
@@ -202,7 +227,7 @@ NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 NA)), row.names = c(NA, -20L), class = c("tbl_df", "tbl", "data.frame"
                                          ))
 
-trump2$.__enclos_env__$private$test_content$gold_standard <- 
+trump2$.__enclos_env__$private$test_content$gs <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
 "\"@KdanielsK: @misstcassidy @AllAboutTheTea_ @realDonaldTrump My money is on Kenya getting fired first.\"", 

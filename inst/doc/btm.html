@@ -15,45 +15,6 @@
 
 <title>BTM</title>
 
-<style type="text/css">
-a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
-a.anchor-section::before {content: '#';}
-.hasAnchor:hover a.anchor-section {visibility: visible;}
-</style>
-<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
-document.addEventListener('DOMContentLoaded', function() {
-  // Do nothing if AnchorJS is used
-  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
-    return;
-  }
-
-  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-
-  // Do nothing if sections are already anchored
-  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
-    return null;
-  }
-
-  // Use section id when pandoc runs with --section-divs
-  const section_id = function(x) {
-    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
-            ? x.id : '');
-  };
-
-  // Add anchors
-  h.forEach(function(x) {
-    const id = x.id || section_id(x.parentElement);
-    if (id === '') {
-      return null;
-    }
-    let anchor = document.createElement('a');
-    anchor.href = '#' + id;
-    anchor.classList = ['anchor-section'];
-    x.classList.add('hasAnchor');
-    x.appendChild(anchor);
-  });
-});
-</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -65,7 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -151,6 +119,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -360,17 +329,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Loading required package: BTM</span></a>
 <a class="sourceLine" id="cb1-3" title="3"><span class="kw">require</span>(quanteda)</a>
 <a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; Loading required package: quanteda</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Package version: 2.1.2</span></a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; Parallel computing: 2 of 8 threads used.</span></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; Attaching package: &#39;quanteda&#39;</span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt; The following object is masked from &#39;package:utils&#39;:</span></a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-12" title="12"><span class="co">#&gt;     View</span></a>
-<a class="sourceLine" id="cb1-13" title="13"><span class="kw">require</span>(oolong)</a>
-<a class="sourceLine" id="cb1-14" title="14"><span class="co">#&gt; Loading required package: oolong</span></a>
-<a class="sourceLine" id="cb1-15" title="15">trump_corpus &lt;-<span class="st"> </span><span class="kw">corpus</span>(trump2k)</a></code></pre></div>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Package version: 3.0.9000</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; Unicode version: 13.0</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; ICU version: 66.1</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; Parallel computing: 8 of 8 threads used.</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="kw">require</span>(oolong)</a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt; Loading required package: oolong</span></a>
+<a class="sourceLine" id="cb1-12" title="12">trump_corpus &lt;-<span class="st"> </span><span class="kw">corpus</span>(trump2k)</a></code></pre></div>
 <p>And then you can do regular text cleaning, stemming procedure with <code>quanteda</code>. Instead of making the product a <code>DFM</code> object, make it a <code>token</code> object. You may read <a href="https://github.com/quanteda/quanteda/issues/1404">this issue</a> by Benoit et al.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">tokens</span>(trump_corpus, <span class="dt">remove_punct =</span> <span class="ot">TRUE</span>, <span class="dt">remove_numbers =</span> <span class="ot">TRUE</span>, <span class="dt">remove_symbols =</span> <span class="ot">TRUE</span>, <span class="dt">split_hyphens =</span> <span class="ot">TRUE</span>, <span class="dt">remove_url =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_tolower</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="kw">stopwords</span>(<span class="st">&quot;en&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="st">&quot;@*&quot;</span>)  -&gt;<span class="st"> </span>trump_toks</a></code></pre></div>
 </div>
@@ -386,57 +352,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb3-7" title="7"></a>
 <a class="sourceLine" id="cb3-8" title="8">trump_dat &lt;-<span class="st"> </span><span class="kw">as.data.frame.tokens</span>(trump_toks)</a></code></pre></div>
 <p>Train a BTM model</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">trump_btm &lt;-<span class="st"> </span><span class="kw">BTM</span>(trump_dat, <span class="dt">k =</span> <span class="dv">8</span>, <span class="dt">iter =</span> <span class="dv">500</span>, <span class="dt">trace =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; 2020-11-13 14:46:14 Start Gibbs sampling iteration 1/500</span></a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 11/500</span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 21/500</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 31/500</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 41/500</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 51/500</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 61/500</span></a>
-<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 71/500</span></a>
-<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 81/500</span></a>
-<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; 2020-11-13 14:46:15 Start Gibbs sampling iteration 91/500</span></a>
-<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 101/500</span></a>
-<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 111/500</span></a>
-<a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 121/500</span></a>
-<a class="sourceLine" id="cb4-15" title="15"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 131/500</span></a>
-<a class="sourceLine" id="cb4-16" title="16"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 141/500</span></a>
-<a class="sourceLine" id="cb4-17" title="17"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 151/500</span></a>
-<a class="sourceLine" id="cb4-18" title="18"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 161/500</span></a>
-<a class="sourceLine" id="cb4-19" title="19"><span class="co">#&gt; 2020-11-13 14:46:16 Start Gibbs sampling iteration 171/500</span></a>
-<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 181/500</span></a>
-<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 191/500</span></a>
-<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 201/500</span></a>
-<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 211/500</span></a>
-<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 221/500</span></a>
-<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 231/500</span></a>
-<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 241/500</span></a>
-<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt; 2020-11-13 14:46:17 Start Gibbs sampling iteration 251/500</span></a>
-<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 261/500</span></a>
-<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 271/500</span></a>
-<a class="sourceLine" id="cb4-30" title="30"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 281/500</span></a>
-<a class="sourceLine" id="cb4-31" title="31"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 291/500</span></a>
-<a class="sourceLine" id="cb4-32" title="32"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 301/500</span></a>
-<a class="sourceLine" id="cb4-33" title="33"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 311/500</span></a>
-<a class="sourceLine" id="cb4-34" title="34"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 321/500</span></a>
-<a class="sourceLine" id="cb4-35" title="35"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 331/500</span></a>
-<a class="sourceLine" id="cb4-36" title="36"><span class="co">#&gt; 2020-11-13 14:46:18 Start Gibbs sampling iteration 341/500</span></a>
-<a class="sourceLine" id="cb4-37" title="37"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 351/500</span></a>
-<a class="sourceLine" id="cb4-38" title="38"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 361/500</span></a>
-<a class="sourceLine" id="cb4-39" title="39"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 371/500</span></a>
-<a class="sourceLine" id="cb4-40" title="40"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 381/500</span></a>
-<a class="sourceLine" id="cb4-41" title="41"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 391/500</span></a>
-<a class="sourceLine" id="cb4-42" title="42"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 401/500</span></a>
-<a class="sourceLine" id="cb4-43" title="43"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 411/500</span></a>
-<a class="sourceLine" id="cb4-44" title="44"><span class="co">#&gt; 2020-11-13 14:46:19 Start Gibbs sampling iteration 421/500</span></a>
-<a class="sourceLine" id="cb4-45" title="45"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 431/500</span></a>
-<a class="sourceLine" id="cb4-46" title="46"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 441/500</span></a>
-<a class="sourceLine" id="cb4-47" title="47"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 451/500</span></a>
-<a class="sourceLine" id="cb4-48" title="48"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 461/500</span></a>
-<a class="sourceLine" id="cb4-49" title="49"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 471/500</span></a>
-<a class="sourceLine" id="cb4-50" title="50"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 481/500</span></a>
-<a class="sourceLine" id="cb4-51" title="51"><span class="co">#&gt; 2020-11-13 14:46:20 Start Gibbs sampling iteration 491/500</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">trump_btm &lt;-<span class="st"> </span><span class="kw">BTM</span>(trump_dat, <span class="dt">k =</span> <span class="dv">8</span>, <span class="dt">iter =</span> <span class="dv">500</span>, <span class="dt">trace =</span> <span class="dv">10</span>)</a></code></pre></div>
 <div id="pecularities-of-btm" class="section level2">
 <h2>Pecularities of BTM</h2>
 <p>This is how you should generate <span class="math inline">\(\theta_{t}\)</span> . However, there are many NaN and there are only 1994 rows (<code>trump2k</code> has 2000 tweets) due to empty documents.</p>
@@ -475,23 +391,35 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Oolong has no problem generating word intrusion test for BTM like you do with other topic models.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm)</a>
 <a class="sourceLine" id="cb9-2" title="2">oolong</a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt; An oolong test object with k = 8, 0 coded.</span></a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt; Use the method $do_word_intrusion_test() to do word intrusion test.</span></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="co">#&gt; Use the method $lock() to finalize this object and see the results.</span></a></code></pre></div>
+<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co">#&gt; ✔ WI ✖ TI ✖ WSI</span></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="co">#&gt; ℹ WI: k = 8, 0 coded.</span></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="co">#&gt; ── Methods ──</span></a>
+<a class="sourceLine" id="cb9-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-10" title="10"><span class="co">#&gt; • &lt;$do_word_intrusion_test()&gt;: do word intrusion test</span></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="co">#&gt; • &lt;$lock()&gt;: finalize and see the results</span></a></code></pre></div>
 <p>For generating topic intrusion tests, however, you must provide the data frame you used for training (in this case <code>trump_dat</code>). Your <code>input_corpus</code> must be a quanteda corpus too.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus, <span class="dt">btm_dataframe =</span> trump_dat)</a>
 <a class="sourceLine" id="cb10-2" title="2">oolong</a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; An oolong test object with k = 8, 0 coded.</span></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; Use the method $do_word_intrusion_test() to do word intrusion test.</span></a>
-<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; With 20 cases of topic intrusion test. 0 coded.</span></a>
-<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt; Use the method $do_topic_intrusion_test() to do topic intrusion test.</span></a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt; Use the method $lock() to finalize this object and see the results.</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; ✔ WI ✔ TI ✖ WSI</span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt; ℹ WI: k = 8, 0 coded.</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt; ℹ TI: n = 20, 0 coded.</span></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt; ── Methods ──</span></a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt; • &lt;$do_word_intrusion_test()&gt;: do word intrusion test</span></a>
+<a class="sourceLine" id="cb10-12" title="12"><span class="co">#&gt; • &lt;$do_topic_intrusion_test()&gt;: do topic intrusion test</span></a>
+<a class="sourceLine" id="cb10-13" title="13"><span class="co">#&gt; • &lt;$lock()&gt;: finalize and see the results</span></a></code></pre></div>
 <p><code>btm_dataframe</code> must not be NULL.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus)</a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="co">#&gt; Error in .extract_ingredients.input_model_s3_btm(.convert_input_model_s3(input_model), : You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
+<a class="sourceLine" id="cb11-2" title="2"><span class="co">#&gt; Error: You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
 <p><code>input_corpus</code> must be a quanteda corpus.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump2k, <span class="dt">btm_dataframe =</span> trump_dat)</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; Error in .extract_ingredients.input_model_s3_btm(.convert_input_model_s3(input_model), : You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; Error: You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
 </div>
 <div class="footnotes">
 <hr />

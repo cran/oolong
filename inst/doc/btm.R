@@ -24,7 +24,7 @@ as.data.frame.tokens <- function(x) {
 
 trump_dat <- as.data.frame.tokens(trump_toks)
 
-## -----------------------------------------------------------------------------
+## ---- message = FALSE, results = 'hide', warning = FALSE----------------------
 trump_btm <- BTM(trump_dat, k = 8, iter = 500, trace = 10)
 
 ## -----------------------------------------------------------------------------

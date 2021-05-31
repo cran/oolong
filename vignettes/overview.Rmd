@@ -17,14 +17,17 @@ knitr::opts_chunk$set(
 set.seed(46709394)
 ```
 
-The validation test is called "oolong test" (for reading tea leaves). Creating oolong test for topic models and dictionary-based uses the same function: `create_oolong()`. The most important parameters are `input_model` and `input_corpus`. Setting each of them to `NULL` generates different tests.
+The validation test is called "oolong test" (for reading tea leaves). This package provides several functions for generating different types of oolong test.
 
-| input\_model | input\_corpus | output                                                                                                                                      |
-|--------------|:-------------:|---------------------------------------------------------------------------------------------------------------------------------------------|
-| Not NULL     | NULL          | oolong test for validating a topic model with [word intrusion test](#word-intrusion-test)                                                   |
-| Not NULL     | Not NULL      | oolong test for validating a topic model with [word intrusion test](#word-intrusion-test) and [topic intrusion test](#topic-intrusion-test) |
-| NULL         | Not NULL      | oolong test for [creating gold standard](#creating-gold-standard)                                                                           |
-| NULL         | NULL          | error                                                                                                                                       |
+| function | purpose                                                                                                                                |
+|---------:|:---------------------------------------------------------------------------------------------------------------------------------------|
+|   `wi()` | validating a topic model with [word intrusion test](#word-intrusion-test) (Chang et al., 2008)                                         |
+|   `ti()` | validating a topic model with [topic intrusion test](#topic-intrusion-test) (Chang et al., 2008; aka "T8WSI" in Ying et al. forthcoming) |
+| `witi()` | validating a topic model with [word intrusion test](#word-intrusion-test) and [topic intrusion test](#topic-intrusion-test)            |
+|  `wsi()` | validating a topic model with [word set intrusion test](#word-set-intrusion-test) (Ying et al. forthcoming)                              |
+|   `gs()` | oolong test for [creating gold standard](#creating-gold-standard) (see Song et al., 2020)                                              |
+
+All of these tests can also be generated with the function [`create_oolong`](#backward-compatibility). As of version 0.3.20, it is no longer recommended.
 
 ## Installation
 
@@ -45,23 +48,23 @@ install.packages("oolong")
 
 #### Word intrusion test
 
-`abstracts_stm` is an example topic model trained with the data `abstracts` using the `stm` package. Currently, this package supports structural topic models / correlated topic models from `stm`, Warp LDA models from `text2vec` , LDA/CTM models from `topicmodels`,  Biterm Topic Models from `BTM` and Keyword Assisted Topic Models from `keyATM`.
+`abstracts_keyatm` is an example topic model trained with the data `abstracts` using the `keyATM` package. Currently, this package supports structural topic models / correlated topic models from `stm`, Warp LDA models from `text2vec` , LDA/CTM models from `topicmodels`,  Biterm Topic Models from `BTM`, Keyword Assisted Topic Models from `keyATM`, and seeded LDA models from `seededlda`. Although not strictly a topic model, Naive Bayes models from `quanteda.textmodels` are also supported. See the section on [Naive Bayes](#about-naive-bayes) for more information.
 
 ```{r}
 library(oolong)
-library(stm)
+library(keyATM)
 library(quanteda)
 library(dplyr)
 ```
 
 ```{r example}
-abstracts_stm
+abstracts_keyatm
 ```
 
-To create an oolong test, use the function `create_oolong_test`.
+To create an oolong test with word intrusion test, use the function `wi`. It is recommended to provide a user id of coder who are going to be doing the test.
 
 ```{r createtest}
-oolong_test <- create_oolong(abstracts_stm)
+oolong_test <- wi(abstracts_keyatm, userid = "Hadley")
 oolong_test
 ```
 
@@ -75,8 +78,8 @@ After the coding, you need to first lock the test. Then, you can look at the mod
 
 ```{r, include = FALSE}
 ### Mock this process
-oolong_test$.__enclos_env__$private$test_content$word$answer <- oolong_test$.__enclos_env__$private$test_content$word$intruder
-oolong_test$.__enclos_env__$private$test_content$word$answer[1] <- "wronganswer"
+oolong_test$.__enclos_env__$private$test_content$wi$answer <- oolong_test$.__enclos_env__$private$test_content$wi$intruder
+oolong_test$.__enclos_env__$private$test_content$wi$answer[1] <- "wronganswer"
 ```
 
 ```{r lock}
@@ -84,9 +87,35 @@ oolong_test$lock()
 oolong_test
 ```
 
+#### Word set intrusion test
+
+Word set intrusion test is a variant of word intrusion test (Ying et al., forthcoming), in which multiple word sets generated from top terms of one topic are juxtaposed with one intruder word set generated similarly from another topic. In Ying et al., this test is called "R4WSI" because 4 word sets are displayed. By default, oolong generates also R4WSI. However, it is also possible to generate R(N)WSI by setting the parameter `n_correct_ws` to N - 1.
+
+```{r wsi1}
+oolong_test <- wsi(abstracts_keyatm, userid = "Garrett")
+oolong_test
+```
+
+Use the method `$do_word_set_intrusion_test()` to start coding. 
+
+```{r wsi2, eval = FALSE}
+oolong_test$do_word_set_intrusion_test()
+```
+
+```{r, include = FALSE}
+### Mock this process
+oolong_test$.__enclos_env__$private$test_content$wsi$answer <- oolong_test$.__enclos_env__$private$test_content$wsi$intruder
+oolong_test$.__enclos_env__$private$test_content$wsi$answer[1] <- "wronganswer"
+```
+
+```{r wsi3}
+oolong_test$lock()
+oolong_test
+```
+
 #### Topic intrusion test
 
-For example, `abstracts_stm` was generated with the corpus `abstracts$text`
+For example, `abstracts_keyatm` was generated with the corpus `abstracts$text`
 
 ```{r newgroup5}
 library(tibble)
@@ -96,7 +125,7 @@ abstracts
 Creating the oolong test object with the corpus used for training the topic model will generate topic intrusion test cases. 
 
 ```{r createtest2}
-oolong_test <- create_oolong(abstracts_stm, abstracts$text)
+oolong_test <- ti(abstracts_keyatm, abstracts$text, userid = "Julia")
 oolong_test
 ```
 
@@ -109,15 +138,15 @@ oolong_test$lock()
 
 ```{r, include = FALSE}
 genius_topic <- function(obj1) {
-    obj1$.__enclos_env__$private$test_content$topic$answer <- obj1$.__enclos_env__$private$test_content$topic$intruder
+    obj1$.__enclos_env__$private$test_content$ti$answer <- obj1$.__enclos_env__$private$test_content$ti$intruder
     return(obj1)
 }
 genius_word <- function(obj1) {
-    obj1$.__enclos_env__$private$test_content$word$answer <- obj1$.__enclos_env__$private$test_content$word$intruder
+    obj1$.__enclos_env__$private$test_content$wi$answer <- obj1$.__enclos_env__$private$test_content$wi$intruder
     return(obj1)
 }
 oolong_test <- genius_word(genius_topic(oolong_test))
-oolong_test$.__enclos_env__$private$test_content$topic$answer[2] <- sample(oolong_test$.__enclos_env__$private$test_content$topic$candidates[[2]], 1)
+oolong_test$.__enclos_env__$private$test_content$ti$answer[2] <- sample(oolong_test$.__enclos_env__$private$test_content$ti$candidates[[2]], 1)
 oolong_test$lock()
 ```
 
@@ -129,36 +158,40 @@ oolong_test
 
 The test makes more sense if more than one coder is involved. A suggested workflow is to create the test, then clone the oolong object. Ask multiple coders to do the test(s) and then summarize the results.
 
+Preprocess and create a document-feature matrix
+
+```{r, eval = FALSE}
+dfm(abstracts$text, tolower = TRUE, stem = TRUE, remove = stopwords('english'), remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE, remove_hyphens = TRUE) %>% dfm_trim(min_docfreq = 3, max_docfreq = 500) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
+```
+
 Train a topic model.
 
 ```{r step0, eval = FALSE}
-dfm(abstracts$text, tolower = TRUE, stem = TRUE, remove = stopwords('english'), remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE, remove_hyphens = TRUE) %>% dfm_trim(min_docfreq = 5, max_docfreq = 1000) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
-docvars(abstracts_dfm, "title") <- abstracts$title
-abstracts_dfm %>% convert(to = "stm", omit_empty = FALSE) -> abstracts_stm
-abstracts_stm <- stm(abstracts_stm$documents, abstracts_stm$vocab, data =abstracts_stm$meta, K = 10, seed = 42)
+require(keyATM)
+abstracts_keyatm <- keyATM(keyATM_read(abstracts_dfm), no_keyword_topics = 0, keywords = abstracts_dictionary, model = "base", options = list(seed = 46709394))
 ```
 
 Create a new oolong object.
 
 ```{r step1}
-oolong_test_rater1 <- create_oolong(abstracts_stm, abstracts$text)
+oolong_test_rater1 <- witi(abstracts_keyatm, abstracts$text, userid = "Yihui")
 ```
 
 Clone the oolong object to be used by other raters.
 
 ```{r step2}
-oolong_test_rater2 <- clone_oolong(oolong_test_rater1)
+oolong_test_rater2 <- clone_oolong(oolong_test_rater1, userid = "Jenny")
 ```
 
 Ask different coders to code each object and then lock the object.
 
 ```{r, eval = FALSE}
-## Let rater 1 do the test.
+## Let Yihui do the test.
 oolong_test_rater1$do_word_intrusion_test()
 oolong_test_rater1$do_topic_intrusion_test()
 oolong_test_rater1$lock()
 
-## Let rater 2 do the test.
+## Let Jenny do the test.
 oolong_test_rater2$do_word_intrusion_test()
 oolong_test_rater2$do_topic_intrusion_test()
 oolong_test_rater2$lock()
@@ -210,7 +243,7 @@ All the API endpoints are the same, except the one for the creation of topic int
 
 ```{r warplda2}
 ### Just word intrusion test.
-oolong_test <- create_oolong(abstracts_warplda)
+oolong_test <- wi(abstracts_warplda, userid = "Lionel")
 oolong_test
 ```
 
@@ -219,14 +252,39 @@ oolong_test
 abstracts_dfm
 ```
 
-```{r warplda4}
-oolong_test <- create_oolong(abstracts_warplda, abstracts$text, input_dfm = abstracts_dfm)
+```{r warplda4, , message = FALSE, results = 'hide', warning = FALSE}
+oolong_test <- witi(abstracts_warplda, abstracts$text, input_dfm = abstracts_dfm, userid = "Mara")
+```
+
+```{r warplda5}
 oolong_test
 ```
 
 ## About Biterm Topic Model
 
 Please refer to the vignette about BTM.
+
+## About Naive Bayes
+
+Naive Bayes model is a supervised machine learning model. This package supports Naive Bayes models trained using `quanteda.textmodels`.
+
+Suppose `newsgroup_nb` is a Naive Bayes model trained on a subset of the classic [20 newsgroups] dataset.
+
+```r
+tokens(newsgroup5$text, remove_punct = TRUE, remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, spilit_hyphens = TRUE) %>% tokens_wordstem %>% tokens_remove(stopwords("en")) %>% dfm(tolower = TRUE) %>% dfm_trim(min_termfreq = 3, max_docfreq = 0.06, docfreq_type = "prop") -> newsgroup_dfm
+docvars(newsgroup_dfm, "group") <- newsgroup5$title
+newsgroup_nb <- textmodel_nb(newsgroup_dfm, docvars(newsgroup_dfm, "group"), distribution = "Bernoulli")
+```
+
+You can still generate word intrusion and word set intrusion tests.
+
+```{r}
+wi(newsgroup_nb)
+```
+
+```{r}
+wsi(newsgroup_nb)
+```
 
 ## Validating Dictionary-based Methods
 
@@ -241,7 +299,7 @@ tibble(text = trump2k)
 For example, you are interested in studying the sentiment of these tweets. One can use tools such as AFINN to automatically extract sentiment in these tweets. However, oolong recommends to generate gold standard by human coding first using a subset. By default, oolong selects 1% of the origin corpus as test cases. The parameter `construct` should be an adjective, e.g. positive, liberal, populistic, etc.
 
 ```{r goldstandard}
-oolong_test <- create_oolong(input_corpus = trump2k, construct = "positive")
+oolong_test <- gs(input_corpus = trump2k, construct = "positive", userid = "Joe")
 oolong_test
 ```
 
@@ -254,7 +312,7 @@ oolong_test$do_gold_standard_test()
 After the coding, you need to first lock the test and then the `$turn_gold()` method is available.
 
 ```{r, include = FALSE}
-oolong_test$.__enclos_env__$private$test_content$gold_standard <- 
+oolong_test$.__enclos_env__$private$test_content$gs <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
 "\"@KdanielsK: @misstcassidy @AllAboutTheTea_ @realDonaldTrump My money is on Kenya getting fired first.\"", 
@@ -318,8 +376,8 @@ summarize_oolong(oolong_test, target_value = all_afinn_score)
 Create an oolong object, clone it for another coder. According to Song et al. (Forthcoming), you should at least draw 1% of your data.
 
 ```{r}
-trump <- create_oolong(input_corpus = trump2k, exact_n = 40)
-trump2 <- clone_oolong(trump)
+trump <- gs(input_corpus = trump2k, exact_n = 40, userid = "JJ")
+trump2 <- clone_oolong(trump, userid = "Winston")
 ```
 
 Instruct two coders to code the tweets and lock the objects.
@@ -332,7 +390,7 @@ trump2$lock()
 ```
 
 ```{r, include = FALSE}
-trump$.__enclos_env__$private$test_content$gold_standard <- 
+trump$.__enclos_env__$private$test_content$gs <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
 "\"@KdanielsK: @misstcassidy @AllAboutTheTea_ @realDonaldTrump My money is on Kenya getting fired first.\"", 
@@ -359,7 +417,7 @@ NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 NA)), row.names = c(NA, -20L), class = c("tbl_df", "tbl", "data.frame"
                                          ))
 
-trump2$.__enclos_env__$private$test_content$gold_standard <- 
+trump2$.__enclos_env__$private$test_content$gs <- 
 structure(list(case = 1:20, text = c("Thank you Eau Claire, Wisconsin. \n#VoteTrump on Tuesday, April 5th!\nMAKE AMERICA GREAT AGAIN! https://t.co/JI5JqwHnMC", 
 "\"@bobby990r_1: @realDonaldTrump would lead polls the second he announces candidacy! America is waiting for him to LEAD us out of this mess!", 
 "\"@KdanielsK: @misstcassidy @AllAboutTheTea_ @realDonaldTrump My money is on Kenya getting fired first.\"", 
@@ -423,12 +481,25 @@ res
 plot(res)
 ```
 
+## Backward compatibility
+
+Historically, oolong test objects could only be generated with only one function: `create_oolong`. It is no longer the case and no longer recommended anymore. It is still retained for backward compatibility purposes. If you still need to use  `create_oolong()`, the most important parameters are `input_model` and `input_corpus`. Setting each of them to `NULL` generates different tests.
+
+| input\_model | input\_corpus | output                                                                                                                                      |
+|--------------|:-------------:|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Not NULL     | NULL          | oolong test for validating a topic model with [word intrusion test](#word-intrusion-test)                                                   |
+| Not NULL     | Not NULL      | oolong test for validating a topic model with [word intrusion test](#word-intrusion-test) and [topic intrusion test](#topic-intrusion-test) |
+| NULL         | Not NULL      | oolong test for [creating gold standard](#creating-gold-standard)                                                                           |
+| NULL         | NULL          | error                                                                                                                                       |
+
+
 ## References
 
 1. Chang, J., Gerrish, S., Wang, C., Boyd-Graber, J. L., & Blei, D. M. (2009). Reading tea leaves: How humans interpret topic models. In Advances in neural information processing systems (pp. 288-296). [link](https://papers.nips.cc/paper/3700-reading-tea-leaves-how-humans-interpret-topic-models)
-2. Song et al. (2020) In validations we trust? The impact of imperfect human annotations as a gold standard on the quality of validation of automated content analysis. Political Communication. [link](https://doi.org/10.1080/10584609.2020.1723752)
-3. Bland, J. M., & Altman, D. (1986). Statistical methods for assessing agreement between two methods of clinical measurement. The lancet, 327(8476), 307-310.
-4. Chan et al. (2020) Four best practices for measuring news sentiment using ‘off-the-shelf’ dictionaries: a large-scale p-hacking experiment. Computational Communication Research. [link](https://osf.io/preprints/socarxiv/np5wa/)
-5. Nielsen, F. Å. (2011). A new ANEW: Evaluation of a word list for sentiment analysis in microblogs. arXiv preprint arXiv:1103.2903. [link](https://arxiv.org/abs/1103.2903)
+2. Ying, L., Montgomery, J. M., & Stewart, B. M. (Forthcoming). Inferring concepts from topics: Towards procedures for validating topics as measures. Political Analysis.
+3. Song et al. (2020) In validations we trust? The impact of imperfect human annotations as a gold standard on the quality of validation of automated content analysis. Political Communication. [link](https://doi.org/10.1080/10584609.2020.1723752)
+4. Bland, J. M., & Altman, D. (1986). Statistical methods for assessing agreement between two methods of clinical measurement. The lancet, 327(8476), 307-310.
+5. Chan et al. (2020) Four best practices for measuring news sentiment using ‘off-the-shelf’ dictionaries: a large-scale p-hacking experiment. Computational Communication Research. [link](https://osf.io/preprints/socarxiv/np5wa/)
+6. Nielsen, F. Å. (2011). A new ANEW: Evaluation of a word list for sentiment analysis in microblogs. arXiv preprint arXiv:1103.2903. [link](https://arxiv.org/abs/1103.2903)
 
 ---

@@ -1,12 +1,12 @@
-context("Gold Standard")
+##context("Gold Standard")
 
 genius_word <- function(obj1) {
-    obj1$.__enclos_env__$private$test_content$word$answer <- obj1$.__enclos_env__$private$test_content$word$intruder
+    obj1$.__enclos_env__$private$test_content$wi$answer <- obj1$.__enclos_env__$private$test_content$wi$intruder
     return(obj1)
 }
 
 genius_topic <- function(obj1) {
-    obj1$.__enclos_env__$private$test_content$topic$answer <- obj1$.__enclos_env__$private$test_content$topic$intruder
+    obj1$.__enclos_env__$private$test_content$ti$answer <- obj1$.__enclos_env__$private$test_content$ti$intruder
     return(obj1)
 }
 
@@ -30,3 +30,7 @@ test_that("locking", {
     expect_error(x$do_gold_standard_test())
 })
 
+test_that("type override input_model", {
+    x <- create_oolong(abstracts_keyatm, abstracts$text, type = "gs")
+    expect_true("oolong_test_gs" %in% class(x))
+})
