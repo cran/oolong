@@ -323,8 +323,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>The validation test is called “oolong test” (for reading tea leaves). This package provides several functions for generating different types of oolong test.</p>
 <table>
 <colgroup>
-<col width="6%"></col>
-<col width="93%"></col>
+<col width="7%"></col>
+<col width="92%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -339,7 +339,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 <tr class="even">
 <td align="right"><code>ti()</code></td>
-<td align="left">validating a topic model with <a href="#topic-intrusion-test">topic intrusion test</a> (Chang et al., 2008; aka “T8WSI” in Ying et al. forthcoming)</td>
+<td align="left">validating a topic model with <a href="#topic-intrusion-test">topic intrusion test</a> (Chang et al., 2008; aka “T8WSI” in Ying et al. 2021)</td>
 </tr>
 <tr class="odd">
 <td align="right"><code>witi()</code></td>
@@ -347,7 +347,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 <tr class="even">
 <td align="right"><code>wsi()</code></td>
-<td align="left">validating a topic model with <a href="#word-set-intrusion-test">word set intrusion test</a> (Ying et al. forthcoming)</td>
+<td align="left">validating a topic model with <a href="#word-set-intrusion-test">word set intrusion test</a> (Ying et al. 2021)</td>
 </tr>
 <tr class="odd">
 <td align="right"><code>gs()</code></td>
@@ -416,7 +416,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="word-set-intrusion-test" class="section level4">
 <h4>Word set intrusion test</h4>
-<p>Word set intrusion test is a variant of word intrusion test (Ying et al., forthcoming), in which multiple word sets generated from top terms of one topic are juxtaposed with one intruder word set generated similarly from another topic. In Ying et al., this test is called “R4WSI” because 4 word sets are displayed. By default, oolong generates also R4WSI. However, it is also possible to generate R(N)WSI by setting the parameter <code>n_correct_ws</code> to N - 1.</p>
+<p>Word set intrusion test is a variant of word intrusion test (Ying et al., 2021), in which multiple word sets generated from top terms of one topic are juxtaposed with one intruder word set generated similarly from another topic. In Ying et al., this test is called “R4WSI” because 4 word sets are displayed. By default, oolong generates also R4WSI. However, it is also possible to generate R(N)WSI by setting the parameter <code>n_correct_ws</code> to N - 1.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">oolong_test &lt;-<span class="st"> </span><span class="kw">wsi</span>(abstracts_keyatm, <span class="dt">userid =</span> <span class="st">&quot;Garrett&quot;</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2">oolong_test</a>
 <a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt; </span></a>
@@ -448,7 +448,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>For example, <code>abstracts_keyatm</code> was generated with the corpus <code>abstracts$text</code></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">library</span>(tibble)</a>
 <a class="sourceLine" id="cb11-2" title="2">abstracts</a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="co">#&gt; # A tibble: 2,500 x 1</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="co">#&gt; # A tibble: 2,500 × 1</span></a>
 <a class="sourceLine" id="cb11-4" title="4"><span class="co">#&gt;    text                                                                         </span></a>
 <a class="sourceLine" id="cb11-5" title="5"><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></a>
 <a class="sourceLine" id="cb11-6" title="6"><span class="co">#&gt;  1 This study explores the benefits and risks featured in medical tourism broke…</span></a>
@@ -487,7 +487,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb14-7" title="7"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb14-8" title="8"><span class="co">#&gt; ── Results: ──</span></a>
 <a class="sourceLine" id="cb14-9" title="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb14-10" title="10"><span class="co">#&gt; ℹ TLO: 0</span></a></code></pre></div>
+<a class="sourceLine" id="cb14-10" title="10"><span class="co">#&gt; ℹ TLO: -0.2</span></a></code></pre></div>
 </div>
 <div id="suggested-workflow" class="section level3">
 <h3>Suggested workflow</h3>
@@ -518,21 +518,21 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb20-4" title="4"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb20-5" title="5"><span class="co">#&gt; ── Word intrusion test ──</span></a>
 <a class="sourceLine" id="cb20-6" title="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb20-7" title="7"><span class="co">#&gt; ℹ Mean model precision: 0.4</span></a>
-<a class="sourceLine" id="cb20-8" title="8"><span class="co">#&gt; ℹ Quantiles of model precision: 0.4, 0.4, 0.4, 0.4, 0.4</span></a>
+<a class="sourceLine" id="cb20-7" title="7"><span class="co">#&gt; ℹ Mean model precision: 0.25</span></a>
+<a class="sourceLine" id="cb20-8" title="8"><span class="co">#&gt; ℹ Quantiles of model precision: 0.2, 0.225, 0.25, 0.275, 0.3</span></a>
 <a class="sourceLine" id="cb20-9" title="9"><span class="co">#&gt; ℹ P-value of the model precision</span></a>
-<a class="sourceLine" id="cb20-10" title="10"><span class="co">#&gt; (H0: Model precision is not better than random guess): 0.0308</span></a>
-<a class="sourceLine" id="cb20-11" title="11"><span class="co">#&gt; ℹ Krippendorff&#39;s alpha: 0.208</span></a>
+<a class="sourceLine" id="cb20-10" title="10"><span class="co">#&gt; (H0: Model precision is not better than random guess): 0.3656</span></a>
+<a class="sourceLine" id="cb20-11" title="11"><span class="co">#&gt; ℹ Krippendorff&#39;s alpha: 0.747</span></a>
 <a class="sourceLine" id="cb20-12" title="12"><span class="co">#&gt; ℹ K Precision:</span></a>
-<a class="sourceLine" id="cb20-13" title="13"><span class="co">#&gt; 0, 0.5, 1, 0, 0, 0.5, 0.5, 0, 0.5, 1</span></a>
+<a class="sourceLine" id="cb20-13" title="13"><span class="co">#&gt; 0, 0.5, 1, 0, 0, 0, 0, 0, 0, 1</span></a>
 <a class="sourceLine" id="cb20-14" title="14"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb20-15" title="15"><span class="co">#&gt; ── Topic intrusion test ──</span></a>
 <a class="sourceLine" id="cb20-16" title="16"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb20-17" title="17"><span class="co">#&gt; ℹ Mean TLO: -3.63</span></a>
-<a class="sourceLine" id="cb20-18" title="18"><span class="co">#&gt; ℹ Median TLO: -4.32</span></a>
-<a class="sourceLine" id="cb20-19" title="19"><span class="co">#&gt; ℹ Quantiles of TLO: -7.7, -6.01, -4.32, -0.8, 0</span></a>
+<a class="sourceLine" id="cb20-17" title="17"><span class="co">#&gt; ℹ Mean TLO: -2.7</span></a>
+<a class="sourceLine" id="cb20-18" title="18"><span class="co">#&gt; ℹ Median TLO: -1.34</span></a>
+<a class="sourceLine" id="cb20-19" title="19"><span class="co">#&gt; ℹ Quantiles of TLO: -7.77, -5.85, -1.34, 0, 0</span></a>
 <a class="sourceLine" id="cb20-20" title="20"><span class="co">#&gt; ℹ P-Value of the median TLO </span></a>
-<a class="sourceLine" id="cb20-21" title="21"><span class="co">#&gt; (H0: Median TLO is not better than random guess): 0.426</span></a></code></pre></div>
+<a class="sourceLine" id="cb20-21" title="21"><span class="co">#&gt; (H0: Median TLO is not better than random guess): 0.0507</span></a></code></pre></div>
 </div>
 <div id="about-the-p-values" class="section level3">
 <h3>About the p-values</h3>
@@ -670,7 +670,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Creating gold standard</h3>
 <p><code>trump2k</code> is a dataset of 2,000 tweets from @realdonaldtrump.</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">tibble</span>(<span class="dt">text =</span> trump2k)</a>
-<a class="sourceLine" id="cb29-2" title="2"><span class="co">#&gt; # A tibble: 2,000 x 1</span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="co">#&gt; # A tibble: 2,000 × 1</span></a>
 <a class="sourceLine" id="cb29-3" title="3"><span class="co">#&gt;    text                                                                         </span></a>
 <a class="sourceLine" id="cb29-4" title="4"><span class="co">#&gt;    &lt;chr&gt;                                                                        </span></a>
 <a class="sourceLine" id="cb29-5" title="5"><span class="co">#&gt;  1 &quot;In just out book, Secret Service Agent Gary Byrne doesn&#39;t believe that Croo…</span></a>
@@ -854,7 +854,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>References</h2>
 <ol style="list-style-type: decimal">
 <li>Chang, J., Gerrish, S., Wang, C., Boyd-Graber, J. L., &amp; Blei, D. M. (2009). Reading tea leaves: How humans interpret topic models. In Advances in neural information processing systems (pp. 288-296). <a href="https://papers.nips.cc/paper/3700-reading-tea-leaves-how-humans-interpret-topic-models">link</a></li>
-<li>Ying, L., Montgomery, J. M., &amp; Stewart, B. M. (Forthcoming). Inferring concepts from topics: Towards procedures for validating topics as measures. Political Analysis.</li>
+<li>Ying, L., Montgomery, J. M., &amp; Stewart, B. M. (2021). Inferring concepts from topics: Towards procedures for validating topics as measures. Political Analysis. <a href="https://doi.org/10.1017/pan.2021.33">link</a></li>
 <li>Song et al. (2020) In validations we trust? The impact of imperfect human annotations as a gold standard on the quality of validation of automated content analysis. Political Communication. <a href="https://doi.org/10.1080/10584609.2020.1723752">link</a></li>
 <li>Bland, J. M., &amp; Altman, D. (1986). Statistical methods for assessing agreement between two methods of clinical measurement. The lancet, 327(8476), 307-310.</li>
 <li>Chan et al. (2020) Four best practices for measuring news sentiment using ‘off-the-shelf’ dictionaries: a large-scale p-hacking experiment. Computational Communication Research. <a href="https://osf.io/preprints/socarxiv/np5wa/">link</a></li>
