@@ -109,23 +109,6 @@ oolong_test_rater2$lock()
 ## ---- step3-------------------------------------------------------------------
 summarize_oolong(oolong_test_rater1, oolong_test_rater2)
 
-## ----warplda------------------------------------------------------------------
-abstracts_warplda
-
-## ----warplda2-----------------------------------------------------------------
-### Just word intrusion test.
-oolong_test <- wi(abstracts_warplda, userid = "Lionel")
-oolong_test
-
-## ----warplda3-----------------------------------------------------------------
-abstracts_dfm
-
-## ----warplda4, , message = FALSE, results = 'hide', warning = FALSE-----------
-oolong_test <- witi(abstracts_warplda, abstracts$text, input_dfm = abstracts_dfm, userid = "Mara")
-
-## ----warplda5-----------------------------------------------------------------
-oolong_test
-
 ## -----------------------------------------------------------------------------
 wi(newsgroup_nb)
 

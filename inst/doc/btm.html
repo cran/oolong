@@ -10,11 +10,40 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="Chung-hong Chan" />
+<meta name="author" content="Chung-hong Chan " />
 
 
 <title>BTM</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -26,6 +55,7 @@
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -35,26 +65,27 @@
   }
 </style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -63,9 +94,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -105,13 +136,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -325,106 +363,106 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="requirement-1-keep-your-quanteda-corpus" class="section level1">
 <h1>Requirement #1: Keep your quanteda corpus</h1>
 <p>It is because every document has a unique document id.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">require</span>(BTM)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Loading required package: BTM</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">require</span>(quanteda)</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; Loading required package: quanteda</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Package version: 3.1.0</span></a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; Unicode version: 13.0</span></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; ICU version: 66.1</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; Parallel computing: 8 of 8 threads used.</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="kw">require</span>(oolong)</a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt; Loading required package: oolong</span></a>
-<a class="sourceLine" id="cb1-12" title="12">trump_corpus &lt;-<span class="st"> </span><span class="kw">corpus</span>(trump2k)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">require</span>(BTM)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="co">#&gt; Loading required package: BTM</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">require</span>(quanteda)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="co">#&gt; Loading required package: quanteda</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="co">#&gt; Package version: 3.3.1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="co">#&gt; Unicode version: 14.0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="co">#&gt; ICU version: 70.1</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="co">#&gt; Parallel computing: 8 of 8 threads used.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="co">#&gt; See https://quanteda.io for tutorials and examples.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="kw">require</span>(oolong)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="co">#&gt; Loading required package: oolong</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>trump_corpus &lt;-<span class="st"> </span><span class="kw">corpus</span>(trump2k)</span></code></pre></div>
 <p>And then you can do regular text cleaning, stemming procedure with <code>quanteda</code>. Instead of making the product a <code>DFM</code> object, make it a <code>token</code> object. You may read <a href="https://github.com/quanteda/quanteda/issues/1404">this issue</a> by Benoit et al.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">tokens</span>(trump_corpus, <span class="dt">remove_punct =</span> <span class="ot">TRUE</span>, <span class="dt">remove_numbers =</span> <span class="ot">TRUE</span>, <span class="dt">remove_symbols =</span> <span class="ot">TRUE</span>, <span class="dt">split_hyphens =</span> <span class="ot">TRUE</span>, <span class="dt">remove_url =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_tolower</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="kw">stopwords</span>(<span class="st">&quot;en&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="st">&quot;@*&quot;</span>)  -&gt;<span class="st"> </span>trump_toks</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">tokens</span>(trump_corpus, <span class="dt">remove_punct =</span> <span class="ot">TRUE</span>, <span class="dt">remove_numbers =</span> <span class="ot">TRUE</span>, <span class="dt">remove_symbols =</span> <span class="ot">TRUE</span>, <span class="dt">split_hyphens =</span> <span class="ot">TRUE</span>, <span class="dt">remove_url =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_tolower</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="kw">stopwords</span>(<span class="st">&quot;en&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tokens_remove</span>(<span class="st">&quot;@*&quot;</span>)  -&gt;<span class="st"> </span>trump_toks</span></code></pre></div>
 </div>
 <div id="requirement-2-keep-your-data-frame" class="section level1">
 <h1>Requirement #2: Keep your data frame</h1>
 <p>Use this function to convert the <code>token</code> object to a data frame.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">as.data.frame.tokens &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb3-2" title="2">  <span class="kw">data.frame</span>(</a>
-<a class="sourceLine" id="cb3-3" title="3">    <span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="kw">names</span>(x), <span class="kw">lengths</span>(x)),</a>
-<a class="sourceLine" id="cb3-4" title="4">    <span class="dt">tokens =</span> <span class="kw">unlist</span>(x, <span class="dt">use.names =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb3-5" title="5">  )</a>
-<a class="sourceLine" id="cb3-6" title="6">}</a>
-<a class="sourceLine" id="cb3-7" title="7"></a>
-<a class="sourceLine" id="cb3-8" title="8">trump_dat &lt;-<span class="st"> </span><span class="kw">as.data.frame.tokens</span>(trump_toks)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>as.data.frame.tokens &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>  <span class="kw">data.frame</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>    <span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="kw">names</span>(x), <span class="kw">lengths</span>(x)),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    <span class="dt">tokens =</span> <span class="kw">unlist</span>(x, <span class="dt">use.names =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>  )</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>}</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>trump_dat &lt;-<span class="st"> </span><span class="kw">as.data.frame.tokens</span>(trump_toks)</span></code></pre></div>
 <p>Train a BTM model</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">trump_btm &lt;-<span class="st"> </span><span class="kw">BTM</span>(trump_dat, <span class="dt">k =</span> <span class="dv">8</span>, <span class="dt">iter =</span> <span class="dv">500</span>, <span class="dt">trace =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>trump_btm &lt;-<span class="st"> </span><span class="kw">BTM</span>(trump_dat, <span class="dt">k =</span> <span class="dv">8</span>, <span class="dt">iter =</span> <span class="dv">500</span>, <span class="dt">trace =</span> <span class="dv">10</span>)</span></code></pre></div>
 <div id="pecularities-of-btm" class="section level2">
 <h2>Pecularities of BTM</h2>
 <p>This is how you should generate <span class="math inline">\(\theta_{t}\)</span> . However, there are many NaN and there are only 1994 rows (<code>trump2k</code> has 2000 tweets) due to empty documents.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">theta &lt;-<span class="st"> </span><span class="kw">predict</span>(trump_btm, <span class="dt">newdata =</span> trump_dat)</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="kw">dim</span>(theta)</a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt; [1] 1994    8</span></a></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">setdiff</span>(<span class="kw">docid</span>(trump_corpus), <span class="kw">row.names</span>(theta))</a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="co">#&gt; [1] &quot;text604&quot;  &quot;text633&quot;  &quot;text659&quot;  &quot;text1586&quot; &quot;text1587&quot; &quot;text1761&quot;</span></a></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">trump_corpus[<span class="dv">604</span>]</a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt; Corpus consisting of 1 document.</span></a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; text604 :</span></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt; &quot;http://t.co/PtViAyrO4A&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>theta &lt;-<span class="st"> </span><span class="kw">predict</span>(trump_btm, <span class="dt">newdata =</span> trump_dat)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="kw">dim</span>(theta)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="co">#&gt; [1] 1993    8</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">setdiff</span>(<span class="kw">docid</span>(trump_corpus), <span class="kw">row.names</span>(theta))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;text604&quot;  &quot;text624&quot;  &quot;text633&quot;  &quot;text659&quot;  &quot;text1586&quot; &quot;text1587&quot; &quot;text1761&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>trump_corpus[<span class="dv">604</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a><span class="co">#&gt; Corpus consisting of 1 document.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a><span class="co">#&gt; text604 :</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a><span class="co">#&gt; &quot;http://t.co/PtViAyrO4A&quot;</span></span></code></pre></div>
 <p>Also, the row order is messed up.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">head</span>(<span class="kw">row.names</span>(theta), <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt;   [1] &quot;text1&quot;    &quot;text10&quot;   &quot;text100&quot;  &quot;text1000&quot; &quot;text1001&quot; &quot;text1002&quot;</span></a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;   [7] &quot;text1003&quot; &quot;text1004&quot; &quot;text1005&quot; &quot;text1006&quot; &quot;text1007&quot; &quot;text1008&quot;</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt;  [13] &quot;text1009&quot; &quot;text101&quot;  &quot;text1010&quot; &quot;text1011&quot; &quot;text1012&quot; &quot;text1013&quot;</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt;  [19] &quot;text1014&quot; &quot;text1015&quot; &quot;text1016&quot; &quot;text1017&quot; &quot;text1018&quot; &quot;text1019&quot;</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt;  [25] &quot;text102&quot;  &quot;text1020&quot; &quot;text1021&quot; &quot;text1022&quot; &quot;text1023&quot; &quot;text1024&quot;</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt;  [31] &quot;text1025&quot; &quot;text1026&quot; &quot;text1027&quot; &quot;text1028&quot; &quot;text1029&quot; &quot;text103&quot; </span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt;  [37] &quot;text1030&quot; &quot;text1031&quot; &quot;text1032&quot; &quot;text1033&quot; &quot;text1034&quot; &quot;text1035&quot;</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt;  [43] &quot;text1036&quot; &quot;text1037&quot; &quot;text1038&quot; &quot;text1039&quot; &quot;text104&quot;  &quot;text1040&quot;</span></a>
-<a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt;  [49] &quot;text1041&quot; &quot;text1042&quot; &quot;text1043&quot; &quot;text1044&quot; &quot;text1045&quot; &quot;text1046&quot;</span></a>
-<a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt;  [55] &quot;text1047&quot; &quot;text1048&quot; &quot;text1049&quot; &quot;text105&quot;  &quot;text1050&quot; &quot;text1051&quot;</span></a>
-<a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt;  [61] &quot;text1052&quot; &quot;text1053&quot; &quot;text1054&quot; &quot;text1055&quot; &quot;text1056&quot; &quot;text1057&quot;</span></a>
-<a class="sourceLine" id="cb8-13" title="13"><span class="co">#&gt;  [67] &quot;text1058&quot; &quot;text1059&quot; &quot;text106&quot;  &quot;text1060&quot; &quot;text1061&quot; &quot;text1062&quot;</span></a>
-<a class="sourceLine" id="cb8-14" title="14"><span class="co">#&gt;  [73] &quot;text1063&quot; &quot;text1064&quot; &quot;text1065&quot; &quot;text1066&quot; &quot;text1067&quot; &quot;text1068&quot;</span></a>
-<a class="sourceLine" id="cb8-15" title="15"><span class="co">#&gt;  [79] &quot;text1069&quot; &quot;text107&quot;  &quot;text1070&quot; &quot;text1071&quot; &quot;text1072&quot; &quot;text1073&quot;</span></a>
-<a class="sourceLine" id="cb8-16" title="16"><span class="co">#&gt;  [85] &quot;text1074&quot; &quot;text1075&quot; &quot;text1076&quot; &quot;text1077&quot; &quot;text1078&quot; &quot;text1079&quot;</span></a>
-<a class="sourceLine" id="cb8-17" title="17"><span class="co">#&gt;  [91] &quot;text108&quot;  &quot;text1080&quot; &quot;text1081&quot; &quot;text1082&quot; &quot;text1083&quot; &quot;text1084&quot;</span></a>
-<a class="sourceLine" id="cb8-18" title="18"><span class="co">#&gt;  [97] &quot;text1085&quot; &quot;text1086&quot; &quot;text1087&quot; &quot;text1088&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">row.names</span>(theta), <span class="dv">100</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="co">#&gt;   [1] &quot;text1&quot;    &quot;text10&quot;   &quot;text100&quot;  &quot;text1000&quot; &quot;text1001&quot; &quot;text1002&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="co">#&gt;   [7] &quot;text1003&quot; &quot;text1004&quot; &quot;text1005&quot; &quot;text1006&quot; &quot;text1007&quot; &quot;text1008&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="co">#&gt;  [13] &quot;text1009&quot; &quot;text101&quot;  &quot;text1010&quot; &quot;text1011&quot; &quot;text1012&quot; &quot;text1013&quot;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a><span class="co">#&gt;  [19] &quot;text1014&quot; &quot;text1015&quot; &quot;text1016&quot; &quot;text1017&quot; &quot;text1018&quot; &quot;text1019&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a><span class="co">#&gt;  [25] &quot;text102&quot;  &quot;text1020&quot; &quot;text1021&quot; &quot;text1022&quot; &quot;text1023&quot; &quot;text1024&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a><span class="co">#&gt;  [31] &quot;text1025&quot; &quot;text1026&quot; &quot;text1027&quot; &quot;text1028&quot; &quot;text1029&quot; &quot;text103&quot; </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a><span class="co">#&gt;  [37] &quot;text1030&quot; &quot;text1031&quot; &quot;text1032&quot; &quot;text1033&quot; &quot;text1034&quot; &quot;text1035&quot;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a><span class="co">#&gt;  [43] &quot;text1036&quot; &quot;text1037&quot; &quot;text1038&quot; &quot;text1039&quot; &quot;text104&quot;  &quot;text1040&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a><span class="co">#&gt;  [49] &quot;text1041&quot; &quot;text1042&quot; &quot;text1043&quot; &quot;text1044&quot; &quot;text1045&quot; &quot;text1046&quot;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a><span class="co">#&gt;  [55] &quot;text1047&quot; &quot;text1048&quot; &quot;text1049&quot; &quot;text105&quot;  &quot;text1050&quot; &quot;text1051&quot;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true"></a><span class="co">#&gt;  [61] &quot;text1052&quot; &quot;text1053&quot; &quot;text1054&quot; &quot;text1055&quot; &quot;text1056&quot; &quot;text1057&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true"></a><span class="co">#&gt;  [67] &quot;text1058&quot; &quot;text1059&quot; &quot;text106&quot;  &quot;text1060&quot; &quot;text1061&quot; &quot;text1062&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true"></a><span class="co">#&gt;  [73] &quot;text1063&quot; &quot;text1064&quot; &quot;text1065&quot; &quot;text1066&quot; &quot;text1067&quot; &quot;text1068&quot;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true"></a><span class="co">#&gt;  [79] &quot;text1069&quot; &quot;text107&quot;  &quot;text1070&quot; &quot;text1071&quot; &quot;text1072&quot; &quot;text1073&quot;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true"></a><span class="co">#&gt;  [85] &quot;text1074&quot; &quot;text1075&quot; &quot;text1076&quot; &quot;text1077&quot; &quot;text1078&quot; &quot;text1079&quot;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true"></a><span class="co">#&gt;  [91] &quot;text108&quot;  &quot;text1080&quot; &quot;text1081&quot; &quot;text1082&quot; &quot;text1083&quot; &quot;text1084&quot;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true"></a><span class="co">#&gt;  [97] &quot;text1085&quot; &quot;text1086&quot; &quot;text1087&quot; &quot;text1088&quot;</span></span></code></pre></div>
 </div>
 </div>
 <div id="oolongs-support-for-btm" class="section level1">
 <h1>Oolong’s support for BTM</h1>
 <p>Oolong has no problem generating word intrusion test for BTM like you do with other topic models.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm)</a>
-<a class="sourceLine" id="cb9-2" title="2">oolong</a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="co">#&gt; ✔ WI ✖ TI ✖ WSI</span></a>
-<a class="sourceLine" id="cb9-6" title="6"><span class="co">#&gt; ℹ WI: k = 8, 0 coded.</span></a>
-<a class="sourceLine" id="cb9-7" title="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-8" title="8"><span class="co">#&gt; ── Methods ──</span></a>
-<a class="sourceLine" id="cb9-9" title="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-10" title="10"><span class="co">#&gt; • &lt;$do_word_intrusion_test()&gt;: do word intrusion test</span></a>
-<a class="sourceLine" id="cb9-11" title="11"><span class="co">#&gt; • &lt;$lock()&gt;: finalize and see the results</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>oolong</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a><span class="co">#&gt; ✔ WI ✖ TI ✖ WSI</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a><span class="co">#&gt; ℹ WI: k = 8, 0 coded.</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a><span class="co">#&gt; ── Methods ──</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true"></a><span class="co">#&gt; • &lt;$do_word_intrusion_test()&gt;: do word intrusion test</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true"></a><span class="co">#&gt; • &lt;$lock()&gt;: finalize and see the results</span></span></code></pre></div>
 <p>For generating topic intrusion tests, however, you must provide the data frame you used for training (in this case <code>trump_dat</code>). Your <code>input_corpus</code> must be a quanteda corpus too.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus, <span class="dt">btm_dataframe =</span> trump_dat)</a>
-<a class="sourceLine" id="cb10-2" title="2">oolong</a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; ✔ WI ✔ TI ✖ WSI</span></a>
-<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt; ℹ WI: k = 8, 0 coded.</span></a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt; ℹ TI: n = 20, 0 coded.</span></a>
-<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt; ── Methods ──</span></a>
-<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt; • &lt;$do_word_intrusion_test()&gt;: do word intrusion test</span></a>
-<a class="sourceLine" id="cb10-12" title="12"><span class="co">#&gt; • &lt;$do_topic_intrusion_test()&gt;: do topic intrusion test</span></a>
-<a class="sourceLine" id="cb10-13" title="13"><span class="co">#&gt; • &lt;$lock()&gt;: finalize and see the results</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus, <span class="dt">btm_dataframe =</span> trump_dat)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>oolong</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="co">#&gt; ✔ WI ✔ TI ✖ WSI</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a><span class="co">#&gt; ℹ WI: k = 8, 0 coded.</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a><span class="co">#&gt; ℹ TI: n = 20, 0 coded.</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a><span class="co">#&gt; ── Methods ──</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a><span class="co">#&gt; • &lt;$do_word_intrusion_test()&gt;: do word intrusion test</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a><span class="co">#&gt; • &lt;$do_topic_intrusion_test()&gt;: do topic intrusion test</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a><span class="co">#&gt; • &lt;$lock()&gt;: finalize and see the results</span></span></code></pre></div>
 <p><code>btm_dataframe</code> must not be NULL.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus)</a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="co">#&gt; Error: You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump_corpus)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="co">#&gt; Error: You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></span></code></pre></div>
 <p><code>input_corpus</code> must be a quanteda corpus.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump2k, <span class="dt">btm_dataframe =</span> trump_dat)</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt; Error: You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>oolong &lt;-<span class="st"> </span><span class="kw">create_oolong</span>(trump_btm, trump2k, <span class="dt">btm_dataframe =</span> trump_dat)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="co">#&gt; Error: You need to provide input_corpus (in quanteda format) and btm_dataframe for generating topic intrusion tests.</span></span></code></pre></div>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>University of Mannheim<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>University of Mannheim<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

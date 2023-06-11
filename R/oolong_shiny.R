@@ -155,7 +155,7 @@
         })
     } else {
         output$done_button <- shiny::renderUI({
-            shiny::actionButton(inputId = "done", label = "Finish", width = "40%", class = "btn-info btn-lg")
+            shiny::actionButton(inputId = "done", label = "Exit", width = "40%", class = "btn-info btn-lg")
         })
     }
     return(output)
@@ -198,7 +198,7 @@
         })
     } else {
         output$done_button <- shiny::renderUI({
-            shiny::actionButton(inputId = "done", label = "Finish", class = "btn-info btn-lg")
+            shiny::actionButton(inputId = "done", label = "Exit", class = "btn-info btn-lg")
         })
     }
     return(output)
@@ -244,7 +244,7 @@
         })
     }  else {
         output$done_button <- shiny::renderUI({
-            shiny::actionButton(inputId = "done", label = "Finish", class = "btn-info btn-lg")
+            shiny::actionButton(inputId = "done", label = "Exit", class = "btn-info btn-lg")
         })
     }
     return(output)
@@ -325,7 +325,7 @@ export_oolong <- function(oolong, dir = base::tempdir(), verbose = TRUE, use_ful
         dir <- base::path.expand(dir)
     }
     file.copy(system.file("app", "app.R", package = "oolong"), dir, overwrite = TRUE)
-    saveRDS(oolong, file = paste0(dir, "/oolong.RDS"))
+    saveRDS(oolong, file = file.path(dir, "oolong.RDS"))
     .cp(verbose, "The Shiny has been written to the directory: ", dir)
     .cp(verbose, "You can test the app with: shiny::runApp(\"", dir, "\")")
     invisible(dir)

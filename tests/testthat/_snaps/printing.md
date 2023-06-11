@@ -59,7 +59,7 @@
       (H0: Model precision is not better than random guess): 0
       i Krippendorff's alpha: 1
       i K Precision:
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1
       
       -- Topic intrusion test --
       
@@ -72,7 +72,8 @@
 # ti only
 
     Code
-      create_oolong(input_model = abstracts_stm, input_corpus = abstracts$text, type = "ti")
+      create_oolong(input_model = abstracts_keyatm, input_corpus = abstracts$text,
+      type = "ti")
     Message <cliMessage>
       
       -- oolong (topic model) --------------------------------------------------------
@@ -87,13 +88,13 @@
 # wsi only
 
     Code
-      create_oolong(input_model = abstracts_stm, input_corpus = abstracts$text, type = "wsi",
-      wsi_n_top_terms = 100)
+      create_oolong(input_model = abstracts_keyatm, input_corpus = abstracts$text,
+      type = "wsi", wsi_n_top_terms = 100)
     Message <cliMessage>
       
       -- oolong (topic model) --------------------------------------------------------
       x WI x TI v WSI
-      i WSI: n = 20, 0 coded.
+      i WSI: n = 10, 0 coded.
       
       -- Methods --
       
@@ -110,10 +111,10 @@
       
       -- Word set intrusion test --
       
-      i Mean model precision: 0.916666666666667
+      i Mean model precision: 0.833333333333333
       i K Precision:
-      0.3, 0.7, 0.7, 0.7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-      i Krippendorff's alpha: 0.135
+      0.3, 0.7, 0.7, 0.7, 1, 1, 1, 1, 1, 1
+      i Krippendorff's alpha: 0.056
 
 ---
 
@@ -127,7 +128,7 @@
       
       i Mean model precision: 1
       i K Precision:
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 
 # export printing
 
