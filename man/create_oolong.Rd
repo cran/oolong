@@ -19,14 +19,16 @@ create_oolong(
   n_top_topics = 3,
   n_topiclabel_words = 8,
   use_frex_words = FALSE,
-  difficulty = 1,
+  frexweight = 0.5,
   input_dfm = NULL,
   construct = "positive",
   btm_dataframe = NULL,
   n_correct_ws = 3,
   wsi_n_top_terms = 20,
   userid = NA,
-  type = "witi"
+  type = "witi",
+  lambda = 1,
+  difficulty = NULL
 )
 
 wi(
@@ -34,8 +36,10 @@ wi(
   userid = NA,
   n_top_terms = 5,
   bottom_terms_percentile = 0.6,
-  difficulty = 1,
-  use_frex_words = FALSE
+  frexweight = 0.5,
+  use_frex_words = FALSE,
+  lambda = 1,
+  difficulty = NULL
 )
 
 witi(
@@ -48,10 +52,12 @@ witi(
   frac = 0.01,
   n_top_topics = 3,
   n_topiclabel_words = 8,
+  frexweight = 0.5,
   use_frex_words = FALSE,
-  difficulty = 1,
   input_dfm = NULL,
-  btm_dataframe = NULL
+  btm_dataframe = NULL,
+  lambda = 1,
+  difficulty = NULL
 )
 
 ti(
@@ -62,10 +68,12 @@ ti(
   frac = 0.01,
   n_top_topics = 3,
   n_topiclabel_words = 8,
+  frexweight = 0.5,
   use_frex_words = FALSE,
-  difficulty = 1,
   input_dfm = NULL,
-  btm_dataframe = NULL
+  btm_dataframe = NULL,
+  lambda = 1,
+  difficulty = NULL
 )
 
 wsi(
@@ -74,8 +82,10 @@ wsi(
   n_topiclabel_words = 4,
   n_correct_ws = 3,
   wsi_n_top_terms = 20,
-  difficulty = 1,
-  use_frex_words = FALSE
+  frexweight = 0.5,
+  use_frex_words = FALSE,
+  lambda = 1,
+  difficulty = NULL
 )
 
 gs(
@@ -105,7 +115,7 @@ gs(
 
 \item{use_frex_words}{(wi, witi, ti, wsi) logical, for a STM object, use FREX words if TRUE, use PROB words if FALSE}
 
-\item{difficulty}{(wi, witi, ti, wsi) double, adjust the difficulty of the test. Higher value indicates higher difficulty and must be within the range of 0 to 1, no effect for STM if use_frex_words is FALSE. Ignore for topicmodels objects}
+\item{frexweight}{(wi, witi, ti, wsi) double, adjust the `frexweight` for STM (see [stm::labelTopics()]), no effect for STM if use_frex_words is FALSE}
 
 \item{input_dfm}{(wi, witi, ti, wsi) a dfm object used for training the input_model, if input_model is a WarpLDA object}
 
@@ -120,6 +130,10 @@ gs(
 \item{userid}{a character string to denote the name of the coder. Default to NA (no userid); not recommended}
 
 \item{type}{(create_oolong) a character string to denote what you want to create. "wi": word intrusion test; "ti": topic intrusion test; "witi": both word intrusion test and topic intrusion test; "gs": gold standard generation}
+
+\item{lambda}{(wi, witi, ti, wsi) double, adjust the `lambda` for WarpLDA (see [text2vec::LatentDirichletAllocation()])}
+
+\item{difficulty}{(wi, witi, ti, wsi) double, deprecated, for backward compatibility}
 }
 \value{
 an oolong test object.
@@ -131,7 +145,7 @@ an oolong test object.
 
 
 Use \code{wi}, \code{ti}, \code{witi}, \code{wsi} or \code{gs} to generate an oolong test of your choice. It is recommended to supply also \code{userid} (current coder).
-The names of the tests (word intrusion test and topic intrusion test) follow Chang et al (2009). In Ying et al. (2021), topic intrusion test is named "T8WSI" (Top 8 Word Set Intrusion). Word set intrusion test in this package is actually the "R4WSI" (Random 4 Word Set Intrusion) in Lu et al (forthcoming). The default settings of \code{wi}, \code{witi}, and \code{ti} follow Chang et al (2009), e.g. \code{n_top_terms} = 5; instead of \code{n_top_terms} = 4 as in Lu et al (forthcoming). The default setting of \code{wsi} follows Ying et al. (forthcoming), e.g. \code{n_topiclabel_words} = 4.
+The names of the tests (word intrusion test and topic intrusion test) follow Chang et al (2009). In Ying et al. (2021), topic intrusion test is named "T8WSI" (Top 8 Word Set Intrusion). Word set intrusion test in this package is actually the "R4WSI" (Random 4 Word Set Intrusion) in Ying et al. The default settings of \code{wi}, \code{witi}, and \code{ti} follow Chang et al (2009), e.g. \code{n_top_terms} = 5; instead of \code{n_top_terms} = 4 as in Ying et al. The default setting of \code{wsi} follows Ying et al., e.g. \code{n_topiclabel_words} = 4.
 As suggested by Song et al. (2020), 1% of the articles from \code{input_corpus} are randomly selected as the test cases of both \code{ti} and \code{gs}, i.e. \code{frac} = 0.01. However, it is generally believed that this proportion is dependent of the size of \code{input_corpus}, e.g. it does not make sense to draw 1% of the articles from only 100 articles. Use \code{exact_n} in these cases.
 }
 
