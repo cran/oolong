@@ -406,26 +406,39 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Validating Topic Models</h2>
 <div id="word-intrusion-test" class="section level4">
 <h4>Word intrusion test</h4>
-<p><code>abstracts_keyatm</code> is an example topic model trained with the data <code>abstracts</code> using the <code>keyATM</code> package. Currently, this package supports structural topic models / correlated topic models from <code>stm</code>, Warp LDA models from <code>text2vec</code> , LDA/CTM models from <code>topicmodels</code>, Biterm Topic Models from <code>BTM</code>, Keyword Assisted Topic Models from <code>keyATM</code>, and seeded LDA models from <code>seededlda</code>. Although not strictly a topic model, Naive Bayes models from <code>quanteda.textmodels</code> are also supported. See the section on <a href="#about-naive-bayes">Naive Bayes</a> for more information.</p>
+<p><code>abstracts_seededlda</code> is an example topic model trained with the data <code>abstracts</code> using the <code>seededlda</code> package. Currently, this package supports structural topic models / correlated topic models from <code>stm</code>, Warp LDA models from <code>text2vec</code> , LDA/CTM models from <code>topicmodels</code>, Biterm Topic Models from <code>BTM</code>, Keyword Assisted Topic Models from <code>keyATM</code>, and seeded LDA models from <code>seededlda</code>. Although not strictly a topic model, Naive Bayes models from <code>quanteda.textmodels</code> are also supported. See the section on <a href="#about-naive-bayes">Naive Bayes</a> for more information.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">library</span>(oolong)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">library</span>(keyATM)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="co">#&gt; keyATM 0.5.0 successfully loaded.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="co">#&gt;  Papers, examples, resources, and other materials are at</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co">#&gt;  https://keyatm.github.io/keyATM/</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="kw">library</span>(quanteda)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="co">#&gt;     filter, lag</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>abstracts_keyatm</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">#&gt; keyATM_output object for the base model.</span></span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">library</span>(seededlda)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="co">#&gt; Loading required package: proxyC</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;proxyC&#39;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="co">#&gt; The following object is masked from &#39;package:stats&#39;:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="co">#&gt;     dist</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;seededlda&#39;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="co">#&gt; The following object is masked from &#39;package:stats&#39;:</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="co">#&gt;     terms</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="kw">library</span>(quanteda)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>abstracts_seededlda</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">#&gt; lda(x = x, k = k, label = label, max_iter = max_iter, alpha = alpha, </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">#&gt;     beta = beta, seeds = seeds, words = NULL, verbose = verbose)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co">#&gt; 10 topics; 2,500 documents; 3,908 features.</span></span></code></pre></div>
 <p>To create an oolong test with word intrusion test, use the function <code>wi</code>. It is recommended to provide a user id of coder who are going to be doing the test.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>oolong_test &lt;-<span class="st"> </span><span class="kw">wi</span>(abstracts_keyatm, <span class="dt">userid =</span> <span class="st">&quot;Hadley&quot;</span>)</span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>oolong_test &lt;-<span class="st"> </span><span class="kw">wi</span>(abstracts_seededlda, <span class="dt">userid =</span> <span class="st">&quot;Hadley&quot;</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>oolong_test</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></span>
@@ -456,7 +469,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="word-set-intrusion-test" class="section level4">
 <h4>Word set intrusion test</h4>
 <p>Word set intrusion test is a variant of word intrusion test (Ying et al., 2021), in which multiple word sets generated from top terms of one topic are juxtaposed with one intruder word set generated similarly from another topic. In Ying et al., this test is called “R4WSI” because 4 word sets are displayed. By default, oolong generates also R4WSI. However, it is also possible to generate R(N)WSI by setting the parameter <code>n_correct_ws</code> to N - 1.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>oolong_test &lt;-<span class="st"> </span><span class="kw">wsi</span>(abstracts_keyatm, <span class="dt">userid =</span> <span class="st">&quot;Garrett&quot;</span>)</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>oolong_test &lt;-<span class="st"> </span><span class="kw">wsi</span>(abstracts_seededlda, <span class="dt">userid =</span> <span class="st">&quot;Garrett&quot;</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>oolong_test</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></span>
@@ -484,7 +497,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="topic-intrusion-test" class="section level4">
 <h4>Topic intrusion test</h4>
-<p>For example, <code>abstracts_keyatm</code> was generated with the corpus <code>abstracts$text</code></p>
+<p>For example, <code>abstracts_seededlda</code> was generated with the corpus <code>abstracts$text</code></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="kw">library</span>(tibble)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>abstracts</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a><span class="co">#&gt; # A tibble: 2,500 × 1</span></span>
@@ -502,7 +515,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true"></a><span class="co">#&gt; 10 Using a national, telephone survey of 1,762 adolescents aged 12-17 years, th…</span></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true"></a><span class="co">#&gt; # ℹ 2,490 more rows</span></span></code></pre></div>
 <p>Creating the oolong test object with the corpus used for training the topic model will generate topic intrusion test cases.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>oolong_test &lt;-<span class="st"> </span><span class="kw">ti</span>(abstracts_keyatm, abstracts<span class="op">$</span>text, <span class="dt">userid =</span> <span class="st">&quot;Julia&quot;</span>)</span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>oolong_test &lt;-<span class="st"> </span><span class="kw">ti</span>(abstracts_seededlda, abstracts<span class="op">$</span>text, <span class="dt">userid =</span> <span class="st">&quot;Julia&quot;</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>oolong_test</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></span>
@@ -526,7 +539,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a><span class="co">#&gt; ── Results: ──</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a><span class="co">#&gt; ℹ TLO: -0.2</span></span></code></pre></div>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a><span class="co">#&gt; ℹ TLO: -0.187</span></span></code></pre></div>
 </div>
 <div id="suggested-workflow" class="section level3">
 <h3>Suggested workflow</h3>
@@ -534,10 +547,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Preprocess and create a document-feature matrix</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="kw">dfm</span>(abstracts<span class="op">$</span>text, <span class="dt">tolower =</span> <span class="ot">TRUE</span>, <span class="dt">stem =</span> <span class="ot">TRUE</span>, <span class="dt">remove =</span> <span class="kw">stopwords</span>(<span class="st">&#39;english&#39;</span>), <span class="dt">remove_punct =</span> <span class="ot">TRUE</span>, <span class="dt">remove_numbers =</span> <span class="ot">TRUE</span>, <span class="dt">remove_symbols =</span> <span class="ot">TRUE</span>, <span class="dt">remove_hyphens =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">dfm_trim</span>(<span class="dt">min_docfreq =</span> <span class="dv">3</span>, <span class="dt">max_docfreq =</span> <span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">dfm_select</span>(<span class="dt">min_nchar =</span> <span class="dv">3</span>, <span class="dt">pattern =</span> <span class="st">&quot;^[a-zA-Z]+$&quot;</span>, <span class="dt">valuetype =</span> <span class="st">&quot;regex&quot;</span>) -&gt;<span class="st"> </span>abstracts_dfm</span></code></pre></div>
 <p>Train a topic model.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">require</span>(keyATM)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>abstracts_keyatm &lt;-<span class="st"> </span><span class="kw">keyATM</span>(<span class="kw">keyATM_read</span>(abstracts_dfm), <span class="dt">no_keyword_topics =</span> <span class="dv">0</span>, <span class="dt">keywords =</span> abstracts_dictionary, <span class="dt">model =</span> <span class="st">&quot;base&quot;</span>, <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">seed =</span> <span class="dv">46709394</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">require</span>(seededlda)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>abstracts_seededlda &lt;-<span class="st"> </span><span class="kw">textmodel_seededlda</span>(<span class="dt">x =</span> abstracts_dfm, <span class="dt">dictionary =</span> <span class="kw">dictionary</span>(abstracts_dictionary), <span class="dt">seeds =</span> <span class="dv">46709394</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p>Create a new oolong object.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>oolong_test_rater1 &lt;-<span class="st"> </span><span class="kw">witi</span>(abstracts_keyatm, abstracts<span class="op">$</span>text, <span class="dt">userid =</span> <span class="st">&quot;Yihui&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>oolong_test_rater1 &lt;-<span class="st"> </span><span class="kw">witi</span>(abstracts_seededlda, abstracts<span class="op">$</span>text, <span class="dt">userid =</span> <span class="st">&quot;Yihui&quot;</span>)</span></code></pre></div>
 <p>Clone the oolong object to be used by other raters.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>oolong_test_rater2 &lt;-<span class="st"> </span><span class="kw">clone_oolong</span>(oolong_test_rater1, <span class="dt">userid =</span> <span class="st">&quot;Jenny&quot;</span>)</span></code></pre></div>
 <p>Ask different coders to code each object and then lock the object.</p>
@@ -567,17 +580,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true"></a><span class="co">#&gt; ── Topic intrusion test ──</span></span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true"></a><span class="co">#&gt; ℹ Mean TLO: -2.7</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true"></a><span class="co">#&gt; ℹ Median TLO: -1.34</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true"></a><span class="co">#&gt; ℹ Quantiles of TLO: -7.77, -5.85, -1.34, 0, 0</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true"></a><span class="co">#&gt; ℹ Mean TLO: -1.5</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true"></a><span class="co">#&gt; ℹ Median TLO: -1.12</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true"></a><span class="co">#&gt; ℹ Quantiles of TLO: -4.71, -2.83, -1.12, 0, 0</span></span>
 <span id="cb20-20"><a href="#cb20-20" aria-hidden="true"></a><span class="co">#&gt; ℹ P-Value of the median TLO </span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true"></a><span class="co">#&gt; (H0: Median TLO is not better than random guess): 0.0507</span></span></code></pre></div>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true"></a><span class="co">#&gt; (H0: Median TLO is not better than random guess): 0.114</span></span></code></pre></div>
 </div>
 <div id="about-the-p-values" class="section level3">
 <h3>About the p-values</h3>
 <p>The test for model precision (MP) is based on an one-tailed, one-sample binomial test for each rater. In a multiple-rater situation, the p-values from all raters are combined using the Fisher’s method (a.k.a. Fisher’s omnibus test).</p>
-<p>H0: MP is not better than 1/ n_top_terms</p>
-<p>H1: MP is better than 1/ n_top_terms</p>
+<p>H0: MP is not better than 1/ (n_top_terms + 1)</p>
+<p>H1: MP is better than 1/ (n_top_terms + 1)</p>
 <p>The test for the median of TLO is based on a permutation test.</p>
 <p>H0: Median TLO is not better than random guess.</p>
 <p>H1: Median TLO is better than random guess.</p>
@@ -819,7 +832,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>University of Mannheim<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>GESIS<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -24,7 +24,7 @@ as.data.frame.tokens <- function(x) {
 
 trump_dat <- as.data.frame.tokens(trump_toks)
 
-## ---- message = FALSE, results = 'hide', warning = FALSE----------------------
+## ----message = FALSE, results = 'hide', warning = FALSE-----------------------
 trump_btm <- BTM(trump_dat, k = 8, iter = 500, trace = 10)
 
 ## -----------------------------------------------------------------------------
@@ -48,9 +48,9 @@ oolong
 oolong <- create_oolong(trump_btm, trump_corpus, btm_dataframe = trump_dat)
 oolong
 
-## ---- error = TRUE------------------------------------------------------------
+## ----error = TRUE-------------------------------------------------------------
 oolong <- create_oolong(trump_btm, trump_corpus)
 
-## ---- error = TRUE------------------------------------------------------------
+## ----error = TRUE-------------------------------------------------------------
 oolong <- create_oolong(trump_btm, trump2k, btm_dataframe = trump_dat)
 

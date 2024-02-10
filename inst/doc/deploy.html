@@ -365,7 +365,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Please note that one cannot deploy oolong test objects with <em>both</em> word and topic intrusion tests, i.e. those created using <code>witi()</code> online. If you need to do both tests, you need to deploy them as two separate instances: one created using <code>wi()</code> and another created using <code>ti()</code>.</p>
 <p>In this guide, we assume you want to deploy a word set intrusion test online.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(oolong)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>wsi_test &lt;-<span class="st"> </span><span class="kw">wsi</span>(abstracts_keyatm)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>wsi_test &lt;-<span class="st"> </span><span class="kw">wsi</span>(abstracts_seededlda)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>wsi_test</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="co">#&gt; ── oolong (topic model) ────────────────────────────────────────────────────────</span></span>
@@ -423,7 +423,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>University of Mannheim<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>GESIS<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>Future versions might provide permanent storage<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
