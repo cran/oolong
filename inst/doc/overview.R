@@ -75,7 +75,7 @@ oolong_test$lock()
 oolong_test
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  dfm(abstracts$text, tolower = TRUE, stem = TRUE, remove = stopwords('english'), remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = TRUE, remove_hyphens = TRUE) %>% dfm_trim(min_docfreq = 3, max_docfreq = 500) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
+#  tokens(abstracts$text, remove_punct = TRUE, remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, spilit_hyphens = TRUE) %>% tokens_wordstem %>% tokens_remove(stopwords("en")) %>% dfm(tolower = TRUE) %>% dfm_trim(min_docfreq = 3, max_docfreq = 500) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
 
 ## ----step0, eval = FALSE------------------------------------------------------
 #  require(seededlda)
@@ -162,7 +162,8 @@ oolong_test$turn_gold()
 
 ## -----------------------------------------------------------------------------
 gold_standard <- oolong_test$turn_gold()
-dfm(gold_standard, remove_punct = TRUE) %>% dfm_lookup(afinn) %>% quanteda::convert(to = "data.frame") %>%
+gold_standard %>% tokens(remove_punct = TRUE) %>% dfm() %>% dfm_lookup(afinn) %>%
+    quanteda::convert(to = "data.frame") %>%
     mutate(matching_word_valence = (neg5 * -5) + (neg4 * -4) + (neg3 * -3) + (neg2 * -2) + (neg1 * -1)
            + (zero * 0) + (pos1 * 1) + (pos2 * 2) + (pos3 * 3) + (pos4 * 4) + (pos5 * 5),
            base = ntoken(gold_standard, remove_punct = TRUE), afinn_score = matching_word_valence / base) %>%
@@ -241,7 +242,8 @@ trump2$lock()
 
 ## -----------------------------------------------------------------------------
 gold_standard <- trump$turn_gold()
-dfm(gold_standard, remove_punct = TRUE) %>% dfm_lookup(afinn) %>% quanteda::convert(to = "data.frame") %>%
+gold_standard %>% tokens(remove_punct = TRUE) %>% dfm() %>%
+    dfm_lookup(afinn) %>% quanteda::convert(to = "data.frame") %>%
     mutate(matching_word_valence = (neg5 * -5) + (neg4 * -4) + (neg3 * -3) + (neg2 * -2) + (neg1 * -1)
            + (zero * 0) + (pos1 * 1) + (pos2 * 2) + (pos3 * 3) + (pos4 * 4) + (pos5 * 5),
            base = ntoken(gold_standard, remove_punct = TRUE), afinn_score = matching_word_valence / base) %>%
