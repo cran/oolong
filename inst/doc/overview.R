@@ -19,7 +19,7 @@ oolong_test <- wi(abstracts_seededlda, userid = "Hadley")
 oolong_test
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  oolong_test$do_word_intrusion_test()
+# oolong_test$do_word_intrusion_test()
 
 ## ----include = FALSE----------------------------------------------------------
 ### Mock this process
@@ -35,7 +35,7 @@ oolong_test <- wsi(abstracts_seededlda, userid = "Garrett")
 oolong_test
 
 ## ----wsi2, eval = FALSE-------------------------------------------------------
-#  oolong_test$do_word_set_intrusion_test()
+# oolong_test$do_word_set_intrusion_test()
 
 ## ----include = FALSE----------------------------------------------------------
 ### Mock this process
@@ -55,8 +55,8 @@ oolong_test <- ti(abstracts_seededlda, abstracts$text, userid = "Julia")
 oolong_test
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  oolong_test$do_topic_intrusion_test()
-#  oolong_test$lock()
+# oolong_test$do_topic_intrusion_test()
+# oolong_test$lock()
 
 ## ----include = FALSE----------------------------------------------------------
 genius_topic <- function(obj1) {
@@ -75,11 +75,11 @@ oolong_test$lock()
 oolong_test
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  tokens(abstracts$text, remove_punct = TRUE, remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, spilit_hyphens = TRUE) %>% tokens_wordstem %>% tokens_remove(stopwords("en")) %>% dfm(tolower = TRUE) %>% dfm_trim(min_docfreq = 3, max_docfreq = 500) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
+# tokens(abstracts$text, remove_punct = TRUE, remove_symbols = TRUE, remove_numbers = TRUE, remove_url = TRUE, spilit_hyphens = TRUE) %>% tokens_wordstem %>% tokens_remove(stopwords("en")) %>% dfm(tolower = TRUE) %>% dfm_trim(min_docfreq = 3, max_docfreq = 500) %>% dfm_select(min_nchar = 3, pattern = "^[a-zA-Z]+$", valuetype = "regex") -> abstracts_dfm
 
 ## ----step0, eval = FALSE------------------------------------------------------
-#  require(seededlda)
-#  abstracts_seededlda <- textmodel_seededlda(x = abstracts_dfm, dictionary = dictionary(abstracts_dictionary), seeds = 46709394, verbose = TRUE)
+# require(seededlda)
+# abstracts_seededlda <- textmodel_seededlda(x = abstracts_dfm, dictionary = dictionary(abstracts_dictionary), seeds = 46709394, verbose = TRUE)
 
 ## ----step1--------------------------------------------------------------------
 oolong_test_rater1 <- witi(abstracts_seededlda, abstracts$text, userid = "Yihui")
@@ -88,15 +88,15 @@ oolong_test_rater1 <- witi(abstracts_seededlda, abstracts$text, userid = "Yihui"
 oolong_test_rater2 <- clone_oolong(oolong_test_rater1, userid = "Jenny")
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  ## Let Yihui do the test.
-#  oolong_test_rater1$do_word_intrusion_test()
-#  oolong_test_rater1$do_topic_intrusion_test()
-#  oolong_test_rater1$lock()
-#  
-#  ## Let Jenny do the test.
-#  oolong_test_rater2$do_word_intrusion_test()
-#  oolong_test_rater2$do_topic_intrusion_test()
-#  oolong_test_rater2$lock()
+# ## Let Yihui do the test.
+# oolong_test_rater1$do_word_intrusion_test()
+# oolong_test_rater1$do_topic_intrusion_test()
+# oolong_test_rater1$lock()
+# 
+# ## Let Jenny do the test.
+# oolong_test_rater2$do_word_intrusion_test()
+# oolong_test_rater2$do_topic_intrusion_test()
+# oolong_test_rater2$lock()
 
 ## ----include = FALSE----------------------------------------------------------
 ### Mock this process
@@ -123,7 +123,7 @@ oolong_test <- gs(input_corpus = trump2k, construct = "positive", userid = "Joe"
 oolong_test
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  oolong_test$do_gold_standard_test()
+# oolong_test$do_gold_standard_test()
 
 ## ----include = FALSE----------------------------------------------------------
 oolong_test$.__enclos_env__$private$test_content$gs <-
@@ -178,10 +178,10 @@ trump <- gs(input_corpus = trump2k, exact_n = 40, userid = "JJ")
 trump2 <- clone_oolong(trump, userid = "Winston")
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  trump$do_gold_standard_test()
-#  trump2$do_gold_standard_test()
-#  trump$lock()
-#  trump2$lock()
+# trump$do_gold_standard_test()
+# trump2$do_gold_standard_test()
+# trump$lock()
+# trump2$lock()
 
 ## ----include = FALSE----------------------------------------------------------
 trump$.__enclos_env__$private$test_content$gs <-

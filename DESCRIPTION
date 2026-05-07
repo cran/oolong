@@ -1,6 +1,6 @@
 Package: oolong
 Title: Create Validation Tests for Automated Content Analysis
-Version: 0.6.1
+Version: 0.7.0
 Authors@R: 
     c(person(given = "Chung-hong", family = "Chan", role = c("aut", "cre"), email = "chainsawtiney@gmail.com", comment = c(ORCID = "0000-0002-6232-7530")),
     person(given = "Marius", family = "Sältzer", role = c("aut"), email = "msaeltze@mail.uni-mannheim.de", comment = c(ORCID = "0000-0002-8604-4666")))
@@ -12,19 +12,20 @@ URL: https://gesistsa.github.io/oolong/,
 LazyData: true
 Depends: R (>= 3.5.0)
 Imports: seededlda, purrr, tibble, shiny, digest, R6, quanteda (>=
-        3.0.0), irr, ggplot2, cowplot, cli, stats, utils
+        3.0.0), icr, ggplot2, cowplot, cli, stats, utils
 RoxygenNote: 7.3.1
 Suggests: keyATM (>= 0.2.2), testthat (>= 3.0.2), text2vec (>= 0.6),
-        BTM, dplyr, topicmodels, stm, covr, stringr, knitr, rmarkdown,
-        fs, quanteda.textmodels, shinytest2
+        BTM, dplyr, topicmodels, stm, covr, knitr, rmarkdown, fs,
+        quanteda.textmodels, shinytest2
 BugReports: https://github.com/gesistsa/oolong/issues
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/website: gesistsa/tsatemplate
 NeedsCompilation: no
-Packaged: 2024-04-15 11:25:06 UTC; chainsawriot
-Author: Chung-hong Chan [aut, cre] (<https://orcid.org/0000-0002-6232-7530>),
-  Marius Sältzer [aut] (<https://orcid.org/0000-0002-8604-4666>)
+Packaged: 2026-05-07 10:30:28 UTC; chainsawriot
+Author: Chung-hong Chan [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-6232-7530>),
+  Marius Sältzer [aut] (ORCID: <https://orcid.org/0000-0002-8604-4666>)
 Maintainer: Chung-hong Chan <chainsawtiney@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-04-15 12:40:04 UTC
+Date/Publication: 2026-05-07 13:01:05 UTC

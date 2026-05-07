@@ -409,27 +409,24 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p><code>abstracts_seededlda</code> is an example topic model trained with the data <code>abstracts</code> using the <code>seededlda</code> package. Currently, this package supports structural topic models / correlated topic models from <code>stm</code>, Warp LDA models from <code>text2vec</code> , LDA/CTM models from <code>topicmodels</code>, Biterm Topic Models from <code>BTM</code>, Keyword Assisted Topic Models from <code>keyATM</code>, and seeded LDA models from <code>seededlda</code>. Although not strictly a topic model, Naive Bayes models from <code>quanteda.textmodels</code> are also supported. See the section on <a href="#about-naive-bayes">Naive Bayes</a> for more information.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">library</span>(oolong)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">library</span>(seededlda)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="co">#&gt; Loading required package: proxyC</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;proxyC&#39;</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="co">#&gt; The following object is masked from &#39;package:stats&#39;:</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="co">#&gt;     dist</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;seededlda&#39;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co">#&gt; The following object is masked from &#39;package:quanteda&#39;:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="co">#&gt;     info_tbb</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="co">#&gt; The following object is masked from &#39;package:stats&#39;:</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;seededlda&#39;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="co">#&gt; The following object is masked from &#39;package:stats&#39;:</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="co">#&gt;     terms</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="kw">library</span>(quanteda)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="co">#&gt;     terms</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="kw">library</span>(quanteda)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="co">#&gt; </span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="co">#&gt;     filter, lag</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="co">#&gt; </span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>abstracts_seededlda</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">#&gt; </span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">#&gt; Call:</span></span>

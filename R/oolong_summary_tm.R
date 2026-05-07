@@ -52,7 +52,7 @@
             res$multiple_test <- NA
             res$rater_precision_p_value <- NA
         } else {
-            res$kripp_alpha <- irr::kripp.alpha(t(ifelse(correction_matrix, 2, 1)))$value
+            res$kripp_alpha <- icr::krippalpha(t(ifelse(correction_matrix, 2, 1)))$alpha
             res$multiple_test <- purrr::map(n_correct, ~binom.test(., n = nrow(correction_matrix), p = 1/n_choices, alternative = "greater"))
             res$rater_precision_p_value <- .combine_p_fisher(purrr::map_dbl(res$multiple_test, "p.value"))
         }
@@ -66,7 +66,7 @@
         res$tlo <- NA
         res$tlo_p_value <- NA
     } else {
-        res$tlo <- .cal_tlo(purrr::map_dfr(all_topic_test_content, ~.), mean_value = FALSE) ### it should not be just the mean.
+        res$tlo <- .cal_tlo(.map_dfr(all_topic_test_content, ~.), mean_value = FALSE) ### it should not be just the mean.
         monkey_median <- unlist(replicate(n_iter, .monkey_median(.clone_obj_list(obj_list))))
         res$tlo_p_value <- sum(monkey_median > median(res$tlo)) / n_iter
     }
@@ -88,9 +88,9 @@
         n_correct <- apply(correction_matrix, 2, sum)
         res$rater_precision_wsi <- as.vector(n_correct / nrow(correction_matrix))
         if (length(obj_list) == 1) {
-            res$kripp_alpha_wsi <- NA                        
+            res$kripp_alpha_wsi <- NA
         } else {
-            res$kripp_alpha_wsi <- irr::kripp.alpha(t(ifelse(correction_matrix, 2, 1)))$value
+            res$kripp_alpha_wsi <- icr::krippalpha(t(ifelse(correction_matrix, 2, 1)))$alpha
         }
     }
     return(res)
@@ -140,5 +140,5 @@
 .monkey_median <- function(obj_list) {
     monkeyed_obj_list <- purrr::map(obj_list, .monkey_test)
     all_topic_test_content <- purrr::map(monkeyed_obj_list, ~ .$.__enclos_env__$private$test_content$ti)
-    median(.cal_tlo(purrr::map_dfr(all_topic_test_content, ~.), mean_value = FALSE))
+    median(.cal_tlo(.map_dfr(all_topic_test_content, ~.), mean_value = FALSE))
 }

@@ -49,8 +49,12 @@ oolong <- create_oolong(trump_btm, trump_corpus, btm_dataframe = trump_dat)
 oolong
 
 ## ----btm_error1, error = TRUE-------------------------------------------------
+try({
 oolong <- create_oolong(trump_btm, trump_corpus)
+})
 
 ## ----btm_error2, error = TRUE-------------------------------------------------
+try({
 oolong <- create_oolong(trump_btm, trump2k, btm_dataframe = trump_dat)
+})
 
