@@ -1,6 +1,6 @@
 Package: oolong
 Title: Create Validation Tests for Automated Content Analysis
-Version: 0.7.0
+Version: 0.7.1
 Authors@R: 
     c(person(given = "Chung-hong", family = "Chan", role = c("aut", "cre"), email = "chainsawtiney@gmail.com", comment = c(ORCID = "0000-0002-6232-7530")),
     person(given = "Marius", family = "Sältzer", role = c("aut"), email = "msaeltze@mail.uni-mannheim.de", comment = c(ORCID = "0000-0002-8604-4666")))
@@ -22,10 +22,10 @@ VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/website: gesistsa/tsatemplate
 NeedsCompilation: no
-Packaged: 2026-05-07 10:30:28 UTC; chainsawriot
+Packaged: 2026-10-23 10:47:31 UTC; chainsawriot
 Author: Chung-hong Chan [aut, cre] (ORCID:
     <https://orcid.org/0000-0002-6232-7530>),
   Marius Sältzer [aut] (ORCID: <https://orcid.org/0000-0002-8604-4666>)
 Maintainer: Chung-hong Chan <chainsawtiney@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-05-07 13:01:05 UTC
+Date/Publication: 2026-10-23 11:00:02 UTC
